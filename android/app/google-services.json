@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "98570020825",
+    "project_id": "rumi-app-ff81f",
+    "storage_bucket": "rumi-app-ff81f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98570020825:android:58f58dc496013994db1bc8",
+        "android_client_info": {
+          "package_name": "com.example.rumi_roomapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXGwPVvcBdyIcFoE2uIJbLndLFL5Aobc4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
