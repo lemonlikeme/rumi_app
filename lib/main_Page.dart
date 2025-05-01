@@ -41,7 +41,8 @@ class _MainPageState extends State<MainPage> {
               decoration: BoxDecoration(
                 color: Color(0xFFB39DDB),
               ),
-              child: Text('Profile Header', style: TextStyle(color: Colors.white, fontSize: 24)),
+              child: Text('Profile Header',
+                  style: TextStyle(color: Colors.white, fontSize: 24)),
             ),
             ListTile(
               leading: const Icon(Icons.home),
@@ -71,16 +72,13 @@ class _MainPageState extends State<MainPage> {
           PopupMenuButton<int>(
             onSelected: (int value) {
               if (value == 1) {
-                // Navigate to FindingRC
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FindingRC()),
-                );
+                _showFindingRC(context);
               } else if (value == 2) {
                 _showDeleteOption(context);
               }
             },
-            itemBuilder: (BuildContext context) => [
+            itemBuilder: (BuildContext context) =>
+            [
               const PopupMenuItem<int>(
                 value: 1,
                 child: Text('Finding RC'),
@@ -114,7 +112,8 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _buildTitleRow(String title) { // Category
+  Widget _buildTitleRow(String title) {
+    // Category
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Row(
@@ -173,6 +172,7 @@ class _MainPageState extends State<MainPage> {
       },
     );
   }
+
   Widget _buildRoomRecyclerView() {
     return ListView.builder(
       shrinkWrap: true,
@@ -201,131 +201,233 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  void _showFindingRC(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(20),
+          backgroundColor: Colors.white,
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Find Category and Room',
+                      style: TextStyle(
+                        color: Color(0xFFB39DDB),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                      color: const Color(0xFFB39DDB),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "You're currently signed in as:",
+                  style: TextStyle(
+                    color: Color(0xFFB39DDB),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Color(0xFFB39DDB),
+                      child: Icon(
+                          Icons.person_outline, size: 40, color: Colors.white),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text(
+                          'John Doe',
+                          style: TextStyle(
+                            color: Color(0xFFB39DDB),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'Software Engineer',
+                          style: TextStyle(
+                            color: Color(0xFFB39DDB),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Enter the code:',
+                  style: TextStyle(
+                    color: Color(0xFFB39DDB),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Room/Category Code',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Color(0xFFB39DDB)),
+                    ),
+                    contentPadding: const EdgeInsets.all(16),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    // Handle confirm action
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFB39DDB),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    minimumSize: const Size(double.infinity, 0),
+                  ),
+                  child: const Text(
+                    'Confirm',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   void _showDeleteOption(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Delete Option'),
-          content: const Text('Are you sure you want to delete this profile?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class FindingRC extends StatelessWidget {
-  const FindingRC({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text('Find Category and Class'),
-        backgroundColor: const Color(0xFFB39DDB),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // "You're currently signed in as" Section
-            const Text(
-              "You're currently signed in as:",
-              style: TextStyle(
-                color: Color(0xFFB39DDB),
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Row(
+          contentPadding: const EdgeInsets.all(20),
+          backgroundColor: Colors.white,
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Color(0xFFB39DDB),
-                  child: const Icon(Icons.person_outline, size: 40, color: Colors.white),
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      'John Doe',
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Delete Category or Room',
                       style: TextStyle(
                         color: Color(0xFFB39DDB),
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      'Software Engineer',
-                      style: TextStyle(
-                        color: Color(0xFFB39DDB),
-                        fontSize: 14,
-                      ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                      color: const Color(0xFFB39DDB),
                     ),
                   ],
                 ),
+                const SizedBox(height: 20),
+                const Text(
+                  "You're currently signed in as:",
+                  style: TextStyle(
+                    color: Color(0xFFB39DDB),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Color(0xFFB39DDB),
+                      child: Icon(
+                          Icons.person_outline, size: 40, color: Colors.white),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text(
+                          'John Doe',
+                          style: TextStyle(
+                            color: Color(0xFFB39DDB),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'Software Engineer',
+                          style: TextStyle(
+                            color: Color(0xFFB39DDB),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Enter the code:',
+                  style: TextStyle(
+                    color: Color(0xFFB39DDB),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Room/Category Code',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Color(0xFFB39DDB)),
+                    ),
+                    contentPadding: const EdgeInsets.all(16),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    // Handle confirm action
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFB39DDB),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    minimumSize: const Size(double.infinity, 0),
+                  ),
+                  child: const Text(
+                    'Confirm',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 20),
-
-            // Input field for class/category code
-            const Text(
-              'Enter the code:',
-              style: TextStyle(
-                color: Color(0xFFB39DDB),
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Class/Category Code',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Color(0xFFB39DDB)),
-                ),
-                contentPadding: const EdgeInsets.all(16),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Save Button
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFB39DDB),
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                minimumSize: const Size(double.infinity, 0),
-              ),
-              child: const Text(
-                'Confirm',
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
