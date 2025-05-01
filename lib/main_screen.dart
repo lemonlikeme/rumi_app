@@ -1,29 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rumi_roomapp/main_Page.dart';
 import 'package:rumi_roomapp/register_Tab.dart';
 import 'package:rumi_roomapp/forgot_Password.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  void _login() async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      // Get user data from Firestore
+      DocumentSnapshot userDoc = await _firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+
+      if (userDoc.exists) {
+        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(userData: userData),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("User data not found in Firestore")),
+        );
+      }
+    } catch (e) {
+      print("Login failed: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Login failed: ${e.toString()}")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE6E6FA), // Background color
+      backgroundColor: Color(0xFFE6E6FA),
       body: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // **Material Icon Instead of Image**
-              Icon(
-                Icons.account_circle,
-                size: 160,
-                color: Colors.grey,
-              ),
+              Icon(Icons.account_circle, size: 160, color: Colors.grey),
               SizedBox(height: 32),
-
-              // Email Input
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   hintText: "Enter your email",
                   hintStyle: TextStyle(color: Color(0xFFA6A6A6)),
@@ -32,15 +74,13 @@ class MainScreen extends StatelessWidget {
                   contentPadding: EdgeInsets.all(16),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey),
                   ),
                 ),
                 keyboardType: TextInputType.emailAddress,
               ),
               SizedBox(height: 16),
-
-              // Password Input
               TextField(
+                controller: _passwordController,
                 decoration: InputDecoration(
                   hintText: "Enter your password",
                   hintStyle: TextStyle(color: Color(0xFFA6A6A6)),
@@ -49,43 +89,26 @@ class MainScreen extends StatelessWidget {
                   contentPadding: EdgeInsets.all(16),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey),
                   ),
                 ),
                 obscureText: true,
               ),
               SizedBox(height: 24),
-
-              // Login Button
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MainPage()),
-                  );
-                },
+                onPressed: _login,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF9C27B0),
                   padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  elevation: 4,
                 ),
-                child: Text(
-                  "Login",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
+                child: Text("Login", style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
               SizedBox(height: 16),
-
-              // Register Button
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const RegisterPage()),
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPage()));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF9C27B0),
@@ -93,26 +116,15 @@ class MainScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  elevation: 4,
                 ),
-                child: Text(
-                  "Register",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
+                child: Text("Register", style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
               SizedBox(height: 24),
-
-              // Forgot Password Link
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
-                  );                },
-                child: Text(
-                  "Forgot Password?",
-                  style: TextStyle(fontSize: 16, color: Color(0xFF1A2331)),
-                ),
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgotPasswordPage()));
+                },
+                child: Text("Forgot Password?", style: TextStyle(fontSize: 16, color: Color(0xFF1A2331))),
               ),
             ],
           ),

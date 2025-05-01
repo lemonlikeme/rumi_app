@@ -8,6 +8,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+
   const MyApp({super.key});
 
   @override
@@ -17,13 +18,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: const MainPage(),
     );
   }
 }
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+
+  final Map<String, dynamic> userData;
+
+  const MainPage({super.key, required this.userData});
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -252,18 +255,18 @@ class _MainPageState extends State<MainPage> {
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
-                          'John Doe',
-                          style: TextStyle(
+                          widget.userData['name'] ?? 'No Name',
+                          style: const TextStyle(
                             color: Color(0xFFB39DDB),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          'Software Engineer',
-                          style: TextStyle(
+                          widget.userData['role'] ?? '',
+                          style: const TextStyle(
                             color: Color(0xFFB39DDB),
                             fontSize: 14,
                           ),
