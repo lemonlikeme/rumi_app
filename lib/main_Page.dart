@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:rumi_roomapp/account_Page.dart';
 import 'package:rumi_roomapp/category_Page.dart';
 import 'package:rumi_roomapp/room_Page.dart';
+
+import 'my_App_Bar.dart';
+import 'my_App_Drawer.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,41 +38,9 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color(0xFFB39DDB),
-              ),
-              child: Text('Profile Header',
-                  style: TextStyle(color: Colors.white, fontSize: 24)),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.account_box),
-              title: const Text('Account'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AccountPage()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-            ),
-          ],
-        ),
-      ),
-      appBar: AppBar(
-        title: const Text('My Toolbar'),
-        backgroundColor: const Color(0xFFB39DDB),
+      drawer: const MyAppDrawer(),
+      appBar: MyAppBar(
+        title: 'My Toolbar',
         actions: [
           PopupMenuButton<int>(
             onSelected: (int value) {
@@ -80,20 +50,15 @@ class _MainPageState extends State<MainPage> {
                 _showDeleteOption(context);
               }
             },
-            itemBuilder: (BuildContext context) =>
-            [
-              const PopupMenuItem<int>(
-                value: 1,
-                child: Text('Finding RC'),
-              ),
-              const PopupMenuItem<int>(
-                value: 2,
-                child: Text('Delete Option'),
-              ),
+            itemBuilder: (BuildContext context) => const [
+              PopupMenuItem<int>(value: 1, child: Text('Finding RC')),
+              PopupMenuItem<int>(value: 2, child: Text('Delete Option')),
             ],
           ),
         ],
       ),
+
+
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),

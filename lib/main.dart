@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'main_screen.dart';
+import 'account_Page.dart';
+import 'category_Page.dart';
+import 'main_Page.dart';
 
 Future<void> main() async {
 
@@ -17,8 +19,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MainScreen(), // Show login screen first
+      title: 'Converted App',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+      ),
+      // This is where you should define your routes:
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MainPage(userData: {/* provide default or mock userData */}),
+        '/account': (context) => const AccountPage(),
+        '/category': (context) => const CategoryPage(),
+        // Add more named routes as needed
+      },
     );
   }
 }

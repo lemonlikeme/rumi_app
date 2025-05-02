@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'my_App_Bar.dart';
+import 'my_App_Drawer.dart';
+
 class CategoryPage extends StatelessWidget {
   const CategoryPage({super.key});
 
@@ -8,10 +11,8 @@ class CategoryPage extends StatelessWidget {
     final String categoryName = ModalRoute.of(context)!.settings.arguments as String? ?? 'Category';
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(categoryName),
-        backgroundColor: const Color(0xFFB39DDB),
-      ),
+      appBar: MyAppBar(title: categoryName),
+      drawer: const MyAppDrawer(),
       body: Center(
         child: Text('Details for $categoryName'),
       ),
