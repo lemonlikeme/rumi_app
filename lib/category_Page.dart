@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rumi_roomapp/room_Page.dart';
 
 import 'my_App_Bar.dart';
 import 'my_App_Drawer.dart';
@@ -29,18 +30,93 @@ class CategoryPage extends StatelessWidget {
               }
             },
             itemBuilder: (BuildContext context) => const [
-              PopupMenuItem<int>(value: 1, child: Text('Finding RC')),
+              PopupMenuItem<int>(value: 1, child: Text('Finding Room')),
               PopupMenuItem<int>(value: 2, child: Text('Delete Option')),
             ],
           ),
         ],
       ),
 
-      body: Center(
-        child: Text('Details for $categoryName'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              _buildTitleRow('Category'),
+              _buildRoomRecyclerView(),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: const Color(0xFFB39DDB),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
+
+  Widget _buildTitleRow(String title) {
+    // Category
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Divider(
+              color: Color(0xFFB39DDB),
+              thickness: 1,
+              endIndent: 8,
+            ),
+          ),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              color: Color(0xFFB39DDB),
+              fontFamily: 'sans-serif-medium',
+            ),
+          ),
+          const Expanded(
+            child: Divider(
+              color: Color(0xFFB39DDB),
+              thickness: 1,
+              indent: 8,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRoomRecyclerView() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          child: ListTile(
+            title: Text('Room ${index + 1}'),
+            subtitle: const Text('Room Description'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RoomPage(),
+                  settings: RouteSettings(
+                    arguments: 'Room ${index + 1}', // Pass data if needed
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
 
   void _showFindingRoom(BuildContext context) {
     showDialog(
