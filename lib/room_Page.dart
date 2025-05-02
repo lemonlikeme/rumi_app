@@ -17,7 +17,7 @@ class RoomPage extends StatelessWidget {
           title: Text(roomName),
           backgroundColor: const Color(0xFFB39DDB),
           bottom: const TabBar(
-            isScrollable: true,
+            isScrollable: false,
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             indicatorColor: Colors.white,
@@ -32,6 +32,21 @@ class RoomPage extends StatelessWidget {
               Tab(text: 'Sat'),
             ],
           ),
+          actions: [
+            PopupMenuButton<int>(
+              onSelected: (int value) {
+                if (value == 1) {
+                  // _getRoomCode(context);
+                } else if (value == 2) {
+                  // _showGainAccess(context);
+                }
+              },
+              itemBuilder: (BuildContext context) => const [
+                PopupMenuItem<int>(value: 1, child: Text('Get Code')),
+                PopupMenuItem<int>(value: 2, child: Text('Gain Access')),
+              ],
+            ),
+          ],
         ),
         body: Column(
           children: [
