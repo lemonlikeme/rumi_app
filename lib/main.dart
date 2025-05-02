@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'account_Page.dart';
 import 'category_Page.dart';
 import 'main_Page.dart';
+import 'main_screen.dart';
 
 Future<void> main() async {
 
@@ -24,11 +25,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
       ),
       // This is where you should define your routes:
-      initialRoute: '/',
+      initialRoute: '/login',
       routes: {
-        '/': (context) => MainPage(userData: {/* provide default or mock userData */}),
+        '/login': (context) => MainScreen(),
+        '/main': (context) => MainPage(userData: {/* ... */}),
         '/account': (context) => const AccountPage(),
-        '/category': (context) => const CategoryPage(),
+        '/category': (context) => const CategoryPage(userData: {}),
         // Add more named routes as needed
       },
     );

@@ -128,7 +128,7 @@ class _MainPageState extends State<MainPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const CategoryPage(),
+                  builder: (context) => const CategoryPage(userData: {},),
                   settings: RouteSettings(
                     arguments: 'Category ${index + 1}', // Pass data if needed
                   ),
