@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rumi_roomapp/createSchedule_Page.dart';
 import 'my_App_Drawer.dart';
 
 class RoomPage extends StatelessWidget {
@@ -92,7 +93,12 @@ class RoomPage extends StatelessWidget {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreateSchedulePage()),
+            );
+          },
           backgroundColor: const Color(0xFFB39DDB),
           child: const Icon(Icons.add, color: Colors.white),
         ),

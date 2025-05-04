@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rumi_roomapp/category_Page.dart';
 import 'package:rumi_roomapp/room_Page.dart';
 
+import 'createCategory_Page.dart';
 import 'my_App_Bar.dart';
 import 'my_App_Drawer.dart';
 
@@ -51,8 +52,12 @@ class _MainPageState extends State<MainPage> {
               }
             },
             itemBuilder: (BuildContext context) => const [
-              PopupMenuItem<int>(value: 1, child: Text('Finding RC')),
-              PopupMenuItem<int>(value: 2, child: Text('Delete Option')),
+              PopupMenuItem<int>(value: 1, child: Center (child:(Text('Finding Category & Room'))
+                ),
+              ),
+              PopupMenuItem<int>(value: 2, child: Center (child:(Text('Delete Option'))
+                ),
+              ),
             ],
           ),
         ],
@@ -73,7 +78,12 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateCategoryPage()),
+          );
+        },
         backgroundColor: const Color(0xFFB39DDB),
         child: const Icon(Icons.add, color: Colors.white),
       ),

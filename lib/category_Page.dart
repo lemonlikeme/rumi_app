@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rumi_roomapp/createRoom_Page.dart';
 import 'package:rumi_roomapp/room_Page.dart';
 
 import 'my_App_Bar.dart';
@@ -27,11 +28,14 @@ class CategoryPage extends StatelessWidget {
                 _showFindingRoom(context);
               } else if (value == 2) {
                 _showDeleteOption(context);
+              } else if (value == 3 ) {
+                // Copy the Category Code
               }
             },
             itemBuilder: (BuildContext context) => const [
-              PopupMenuItem<int>(value: 1, child: Text('Finding Room')),
-              PopupMenuItem<int>(value: 2, child: Text('Delete Option')),
+              PopupMenuItem<int>(value: 1, child: Text('Find Room')),
+              PopupMenuItem<int>(value: 2, child: Text('Delete Room')),
+              PopupMenuItem<int>(value: 3, child: Text('Copy Category Code'))
             ],
           ),
         ],
@@ -49,7 +53,12 @@ class CategoryPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateRoomPage()),
+          );
+        },
         backgroundColor: const Color(0xFFB39DDB),
         child: const Icon(Icons.add, color: Colors.white),
       ),
