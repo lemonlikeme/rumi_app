@@ -32,7 +32,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFB39DDB), // Lavender Purple
+                        color: const Color(0xFF9C27B0), // Lavender Purple
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
