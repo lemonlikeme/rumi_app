@@ -21,9 +21,13 @@ class CreateCategoryPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back),
+                        icon: const Icon(Icons.arrow_back, color: Colors.white,),
                         onPressed: () => Navigator.pop(context),
-                        color: Colors.white,
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all(
+                            const Color(0xFF9C27B0),
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),

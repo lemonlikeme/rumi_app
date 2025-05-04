@@ -16,7 +16,7 @@ class RoomPage extends StatelessWidget {
         drawer: const MyAppDrawer(),
         appBar: AppBar(
           title: Text(roomName),
-          backgroundColor: const Color(0xFFB39DDB),
+          backgroundColor: const Color(0xFF9C27B0),
           bottom: const TabBar(
             isScrollable: false,
             labelColor: Colors.white,
@@ -70,7 +70,7 @@ class RoomPage extends StatelessWidget {
                     right: 16,
                     child: FloatingActionButton.small(
                       onPressed: () {},
-                      backgroundColor: const Color(0xFFB39DDB),
+                      backgroundColor: const Color(0xFF9C27B0),
                       child: const Icon(Icons.edit, color: Colors.white),
                     ),
                   ),
@@ -99,7 +99,7 @@ class RoomPage extends StatelessWidget {
               MaterialPageRoute(builder: (context) => CreateSchedulePage()),
             );
           },
-          backgroundColor: const Color(0xFFB39DDB),
+          backgroundColor: const Color(0xFF9C27B0),
           child: const Icon(Icons.add, color: Colors.white),
         ),
       ),

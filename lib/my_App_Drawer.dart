@@ -11,7 +11,7 @@ class MyAppDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           const DrawerHeader(
-            decoration: BoxDecoration(color: Color(0xFFB39DDB)),
+            decoration: BoxDecoration(color: Color(0xFF9C27B0)),
             child: Text(
               'Profile Header',
               style: TextStyle(color: Colors.white, fontSize: 24),

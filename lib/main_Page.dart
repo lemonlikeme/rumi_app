@@ -4,6 +4,7 @@ import 'package:rumi_roomapp/room_Page.dart';
 
 import 'createCategory_Page.dart';
 import 'my_App_Bar.dart';
+import 'my_App_BottomSheet.dart';
 import 'my_App_Drawer.dart';
 
 void main() {
@@ -41,7 +42,8 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       drawer: const MyAppDrawer(),
       appBar: MyAppBar(
-        title: 'My Toolbar',
+        title: 'Hi!',
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           PopupMenuButton<int>(
             onSelected: (int value) {
@@ -79,12 +81,14 @@ class _MainPageState extends State<MainPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateCategoryPage()),
+          showModalBottomSheet(
+            context: context,
+            backgroundColor: Colors.transparent, // optional, for rounded corners
+            isScrollControlled: true,            // allows full-height bottom sheet
+            builder: (context) => const CustomBottomSheet(),
           );
         },
-        backgroundColor: const Color(0xFFB39DDB),
+        backgroundColor: const Color(0xFF9C27B0),
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -98,7 +102,7 @@ class _MainPageState extends State<MainPage> {
         children: [
           const Expanded(
             child: Divider(
-              color: Color(0xFFB39DDB),
+              color: Color(0xFF9C27B0),
               thickness: 1,
               endIndent: 8,
             ),
@@ -107,13 +111,13 @@ class _MainPageState extends State<MainPage> {
             title,
             style: const TextStyle(
               fontSize: 18,
-              color: Color(0xFFB39DDB),
+              color: Color(0xFF9C27B0),
               fontFamily: 'sans-serif-medium',
             ),
           ),
           const Expanded(
             child: Divider(
-              color: Color(0xFFB39DDB),
+              color: Color(0xFF9C27B0),
               thickness: 1,
               indent: 8,
             ),
@@ -197,7 +201,7 @@ class _MainPageState extends State<MainPage> {
                     const Text(
                       'Find Category and Room',
                       style: TextStyle(
-                        color: Color(0xFFB39DDB),
+                        color: Color(0xFF9C27B0),
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -205,7 +209,7 @@ class _MainPageState extends State<MainPage> {
                     IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () => Navigator.pop(context),
-                      color: const Color(0xFFB39DDB),
+                      color: const Color(0xFF9C27B0),
                     ),
                   ],
                 ),
@@ -213,7 +217,7 @@ class _MainPageState extends State<MainPage> {
                 const Text(
                   "You're currently signed in as:",
                   style: TextStyle(
-                    color: Color(0xFFB39DDB),
+                    color: Color(0xFF9C27B0),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -223,7 +227,7 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     const CircleAvatar(
                       radius: 24,
-                      backgroundColor: Color(0xFFB39DDB),
+                      backgroundColor: Color(0xFF9C27B0),
                       child: Icon(
                           Icons.person_outline, size: 40, color: Colors.white),
                     ),
@@ -234,7 +238,7 @@ class _MainPageState extends State<MainPage> {
                         Text(
                           widget.userData['name'] ?? 'No Name',
                           style: const TextStyle(
-                            color: Color(0xFFB39DDB),
+                            color: Color(0xFF9C27B0),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -242,7 +246,7 @@ class _MainPageState extends State<MainPage> {
                         Text(
                           widget.userData['role'] ?? '',
                           style: const TextStyle(
-                            color: Color(0xFFB39DDB),
+                            color: Color(0xFF9C27B0),
                             fontSize: 14,
                           ),
                         ),
@@ -254,7 +258,7 @@ class _MainPageState extends State<MainPage> {
                 const Text(
                   'Enter the code:',
                   style: TextStyle(
-                    color: Color(0xFFB39DDB),
+                    color: Color(0xFF9C27B0),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -265,7 +269,7 @@ class _MainPageState extends State<MainPage> {
                     hintText: 'Room/Category Code',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFB39DDB)),
+                      borderSide: const BorderSide(color: Color(0xFF9C27B0)),
                     ),
                     contentPadding: const EdgeInsets.all(16),
                   ),
@@ -277,7 +281,7 @@ class _MainPageState extends State<MainPage> {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB39DDB),
+                    backgroundColor: const Color(0xFF9C27B0),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     minimumSize: const Size(double.infinity, 0),
                   ),
@@ -312,7 +316,7 @@ class _MainPageState extends State<MainPage> {
                     const Text(
                       'Delete Category or Room',
                       style: TextStyle(
-                        color: Color(0xFFB39DDB),
+                        color: Color(0xFF9C27B0),
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -320,7 +324,7 @@ class _MainPageState extends State<MainPage> {
                     IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () => Navigator.pop(context),
-                      color: const Color(0xFFB39DDB),
+                      color: const Color(0xFF9C27B0),
                     ),
                   ],
                 ),
@@ -328,7 +332,7 @@ class _MainPageState extends State<MainPage> {
                 const Text(
                   "You're currently signed in as:",
                   style: TextStyle(
-                    color: Color(0xFFB39DDB),
+                    color: Color(0xFF9C27B0),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -338,7 +342,7 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     const CircleAvatar(
                       radius: 24,
-                      backgroundColor: Color(0xFFB39DDB),
+                      backgroundColor: Color(0xFF9C27B0),
                       child: Icon(
                           Icons.person_outline, size: 40, color: Colors.white),
                     ),
@@ -349,7 +353,7 @@ class _MainPageState extends State<MainPage> {
                         Text(
                           'John Doe',
                           style: TextStyle(
-                            color: Color(0xFFB39DDB),
+                            color: Color(0xFF9C27B0),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -357,7 +361,7 @@ class _MainPageState extends State<MainPage> {
                         Text(
                           'Software Engineer',
                           style: TextStyle(
-                            color: Color(0xFFB39DDB),
+                            color: Color(0xFF9C27B0),
                             fontSize: 14,
                           ),
                         ),
@@ -369,7 +373,7 @@ class _MainPageState extends State<MainPage> {
                 const Text(
                   'Enter the code:',
                   style: TextStyle(
-                    color: Color(0xFFB39DDB),
+                    color: Color(0xFF9C27B0),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -380,7 +384,7 @@ class _MainPageState extends State<MainPage> {
                     hintText: 'Room/Category Code',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFB39DDB)),
+                      borderSide: const BorderSide(color: Color(0xFF9C27B0)),
                     ),
                     contentPadding: const EdgeInsets.all(16),
                   ),
@@ -392,7 +396,7 @@ class _MainPageState extends State<MainPage> {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB39DDB),
+                    backgroundColor: const Color(0xFF9C27B0),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     minimumSize: const Size(double.infinity, 0),
                   ),

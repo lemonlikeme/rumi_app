@@ -18,11 +18,11 @@ class CreateRoomPage extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white,),
                       onPressed: () => Navigator.pop(context),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                          const Color(0xFFB497BD), // lavender_purple
+                        backgroundColor: WidgetStateProperty.all(
+                          const Color(0xFF9C27B0),
                         ),
                       ),
                     ),
@@ -32,7 +32,7 @@ class CreateRoomPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF6A4C9C), // lavender_purple
+                        color: Color(0xFF9C27B0), // lavender_purple
                       ),
                     ),
                   ],
@@ -52,11 +52,11 @@ class CreateRoomPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB497BD), // lavender_purple
+                    backgroundColor: const Color(0xFF9C27B0), // lavender_purple
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     textStyle: const TextStyle(fontSize: 16),
                   ),
-                  child: const Center(child: Text("Confirm")),
+                  child: const Center(child: Text("Confirm", style: TextStyle(color: Colors.white),),),
                 ),
               ],
             ),
@@ -74,7 +74,7 @@ class CreateRoomPage extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 18,
-            color: Color(0xFF6A4C9C), // lavender_purple
+            color: Color(0xFF9C27B0), // lavender_purple
           ),
         ),
         const SizedBox(height: 8),
@@ -88,7 +88,7 @@ class CreateRoomPage extends StatelessWidget {
             fillColor: Colors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF6A4C9C)), // lavender_purple
+              borderSide: const BorderSide(color: Color(0xFF9C27B0)), // lavender_purple
             ),
           ),
         ),
