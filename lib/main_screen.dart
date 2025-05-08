@@ -6,6 +6,8 @@ import 'package:rumi_roomapp/register_Tab.dart';
 import 'package:rumi_roomapp/forgot_Password.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
