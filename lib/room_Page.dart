@@ -15,10 +15,11 @@ class RoomPage extends StatelessWidget {
       child: Scaffold(
         drawer: const MyAppDrawer(),
         appBar: AppBar(
-          title: Text(roomName),
+          title: Text('Room Page'),
+          iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: const Color(0xFF9C27B0),
           bottom: const TabBar(
-            isScrollable: false,
+            isScrollable: true,
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             indicatorColor: Colors.white,
