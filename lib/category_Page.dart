@@ -106,21 +106,105 @@ class CategoryPage extends StatelessWidget {
       itemCount: 5,
       itemBuilder: (context, index) {
         return Card(
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
-            title: Text('Room ${index + 1}'),
-            subtitle: const Text('Room Description'),
+          margin: const EdgeInsets.fromLTRB(8, 15, 8, 5),
+          color: const Color(0xFF9C27B0), // Replace with your 'blueBlack'
+          elevation: 12,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: InkWell(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const RoomPage(),
-                  settings: RouteSettings(
-                    arguments: 'Room ${index + 1}', // Pass data if needed
+                  settings: const RouteSettings(
+                    arguments: 'Room Name',
                   ),
                 ),
               );
             },
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/stripes_fade.png'),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(24)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Row: Room name and pill label
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Room Name', // Replace with dynamic value
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFEFEFEF),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Text(
+                          'Room',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Row: Place and Building
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Places',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFFEFEFEF),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Buildings',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFFEFEFEF),
+                          ),
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      'No. of chairs',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFFEFEFEF),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
