@@ -20,7 +20,7 @@ class CategoryPage extends StatelessWidget {
     return Scaffold(
       drawer: const MyAppDrawer(),
       appBar: MyAppBar(
-        title: 'Category Page',
+        title: categoryName,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           PopupMenuButton<int>(
