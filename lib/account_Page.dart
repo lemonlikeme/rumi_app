@@ -247,7 +247,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void _renameFullName(BuildContext context) {
-    final controller = TextEditingController();
+    final controller = TextEditingController(text: widget.userData['fullName']);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -263,7 +263,7 @@ class _AccountPageState extends State<AccountPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Renaming',
+                      'Rename Full Name',
                       style: TextStyle(
                         color: Color(0xFFB39DDB),
                         fontSize: 20,
@@ -279,7 +279,7 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  'Enter Full Name: ',
+                  'Enter New Full Name:',
                   style: TextStyle(
                     color: Color(0xFFB39DDB),
                     fontSize: 18,
@@ -299,11 +299,25 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      widget.userData['fullName'] = controller.text;
-                    });
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    final newName = controller.text.trim();
+                    if (newName.isNotEmpty) {
+                      final id = widget.userData['id'];
+                      await _firestore.collection('users').doc(id).set(
+                        {'fullName': newName},
+                        SetOptions(merge: true),
+                      );
+
+                      setState(() {
+                        widget.userData['fullName'] = newName;
+                      });
+
+                      Navigator.pop(context);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Full name updated successfully!')),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFB39DDB),
