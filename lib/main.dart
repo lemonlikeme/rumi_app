@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
           return MainPage(userData: args);
         },
-        '/category': (context) => const CategoryPage(userData: {}),
+        // '/category': (context) => const CategoryPage(userData: {}),
         // Add more named routes as needed
       },
     );

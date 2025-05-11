@@ -7,20 +7,22 @@ import 'my_App_Drawer.dart';
 
 class CategoryPage extends StatelessWidget {
   final Map<String, dynamic> userData;
-
+  final String categoryId;
   const CategoryPage({
     super.key,
     required this.userData,
+    required this.categoryId,
   });
 
   @override
   Widget build(BuildContext context) {
-    final String categoryName = ModalRoute.of(context)!.settings.arguments as String? ?? 'Category';
+    //final String categoryName = ModalRoute.of(context)!.settings.arguments as String? ?? 'Category';
+
 
     return Scaffold(
       drawer: MyAppDrawer(userData: userData),
       appBar: MyAppBar(
-        title: categoryName,
+        title: categoryId,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           PopupMenuButton<int>(
