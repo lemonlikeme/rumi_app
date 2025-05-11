@@ -3,11 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({super.key});
+  final Map<String, dynamic> userData;
+  const AccountPage({super.key, required this.userData});
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -16,23 +15,11 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   File? _profileImage;
   String? _cloudinaryUrl;
-  final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
-    _loadProfilePhoto();
-  }
-
-  Future<void> _loadProfilePhoto() async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      final doc = await _firestore.collection('users').doc(user.uid).get();
-      setState(() {
-        _cloudinaryUrl = doc.data()?['photoProfile'];
-      });
-    }
+    _cloudinaryUrl = widget.userData['photoProfile'];
   }
 
   Future<void> _pickImage() async {
@@ -44,10 +31,12 @@ class _AccountPageState extends State<AccountPage> {
       });
       final url = await _uploadToCloudinary(_profileImage!);
       if (url != null) {
-        await _savePhotoUrlToFirestore(url);
         setState(() {
           _cloudinaryUrl = url;
         });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile photo updated!')),
+        );
       }
     }
   }
@@ -68,19 +57,6 @@ class _AccountPageState extends State<AccountPage> {
         const SnackBar(content: Text('Cloudinary upload failed')),
       );
       return null;
-    }
-  }
-
-  Future<void> _savePhotoUrlToFirestore(String url) async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      await _firestore.collection('users').doc(user.uid).set(
-        {'photoProfile': url},
-        SetOptions(merge: true),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile photo updated!')),
-      );
     }
   }
 
@@ -137,32 +113,24 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
               _buildInfoRow(
-                context,
-                hint: 'Full Name',
+                hint: widget.userData['fullName'] ?? 'Full Name',
                 icon: Icons.person_outline,
-                onEditPressed: () {
-                  _renameFullName(context);
-                },
+                onEditPressed: () => _renameFullName(context),
               ),
               _buildInfoRow(
-                context,
-                hint: 'Email',
+                hint: widget.userData['email'] ?? 'Email',
                 icon: Icons.email_outlined,
                 showEditButton: false,
               ),
               _buildInfoRow(
-                context,
-                hint: 'Phone Number',
+                hint: widget.userData['phoneNumber'] ?? 'Phone Number',
                 icon: Icons.local_phone_outlined,
                 showEditButton: false,
               ),
               _buildInfoRow(
-                context,
                 hint: 'Password',
                 icon: Icons.password,
-                onEditPressed: () {
-                  _resetPassword(context);
-                },
+                onEditPressed: () => _resetPassword(context),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -170,14 +138,14 @@ class _AccountPageState extends State<AccountPage> {
                   children: [
                     Expanded(
                       child: _buildSimpleInfoBox(
-                        hint: 'Gender',
+                        hint: widget.userData['gender'] ?? 'Gender',
                         icon: Icons.person_outline,
                       ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: _buildSimpleInfoBox(
-                        hint: 'Profession',
+                        hint: widget.userData['profession'] ?? 'Profession',
                         icon: Icons.drive_file_rename_outline,
                       ),
                     ),
@@ -187,9 +155,7 @@ class _AccountPageState extends State<AccountPage> {
               const SizedBox(height: 20),
               FloatingActionButton(
                 backgroundColor: Colors.deepPurple,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
                 child: const Icon(Icons.arrow_back, color: Colors.white),
               ),
               const SizedBox(height: 20),
@@ -200,7 +166,7 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, {
+  Widget _buildInfoRow({
     required String hint,
     required IconData icon,
     bool showEditButton = true,
@@ -216,8 +182,9 @@ class _AccountPageState extends State<AccountPage> {
               icon: icon,
             ),
           ),
-          if (showEditButton) ...[
+          if (showEditButton)
             const SizedBox(width: 8),
+          if (showEditButton)
             Material(
               color: Colors.deepPurple,
               shape: const CircleBorder(),
@@ -227,13 +194,40 @@ class _AccountPageState extends State<AccountPage> {
                 onPressed: onEditPressed,
               ),
             ),
-          ]
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSimpleInfoBox({required String hint, required IconData icon}) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.deepPurple, width: 2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.deepPurple),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              hint,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );
   }
 
   void _renameFullName(BuildContext context) {
+    final controller = TextEditingController();
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -274,11 +268,11 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 const SizedBox(height: 10),
                 TextField(
+                  controller: controller,
                   decoration: InputDecoration(
                     hintText: 'New Name',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFB39DDB)),
                     ),
                     contentPadding: const EdgeInsets.all(16),
                   ),
@@ -286,6 +280,9 @@ class _AccountPageState extends State<AccountPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
+                    setState(() {
+                      widget.userData['fullName'] = controller.text;
+                    });
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -337,39 +334,20 @@ class _AccountPageState extends State<AccountPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Old Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFB39DDB)),
+                ...['Old Password', 'New Password', 'Confirm Password'].map((hint) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: hint,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        contentPadding: const EdgeInsets.all(16),
+                      ),
                     ),
-                    contentPadding: const EdgeInsets.all(16),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'New Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFB39DDB)),
-                    ),
-                    contentPadding: const EdgeInsets.all(16),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Confirm Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFB39DDB)),
-                    ),
-                    contentPadding: const EdgeInsets.all(16),
-                  ),
-                ),
-                const SizedBox(height: 20),
+                  );
+                }).toList(),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
@@ -389,33 +367,6 @@ class _AccountPageState extends State<AccountPage> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildSimpleInfoBox({required String hint, required IconData icon}) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.deepPurple, width: 2),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.deepPurple),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              hint,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
