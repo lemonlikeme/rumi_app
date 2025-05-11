@@ -58,7 +58,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
         const SnackBar(content: Text('Room created successfully!')),
       );
 
-      Navigator.pop(context);
+      Navigator.pushReplacementNamed(context, '/main', arguments: widget.userData);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
