@@ -30,7 +30,7 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
     String buildingName = _buildingController.text.trim();
     String groupCode = generateGroupCode(); // generate random code
     List<String> roomIds = []; // Placeholder for room IDs, should be handled later
-    List<String> userIds = [widget.userData['uid']]; // Placeholder for user IDs, should be handled later
+    List<String> userIds = [widget.userData['id']]; // Placeholder for user IDs, should be handled later
 
     // Check if all fields are filled
     if (categoryName.isEmpty || placeName.isEmpty || buildingName.isEmpty) {

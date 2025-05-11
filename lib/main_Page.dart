@@ -34,10 +34,18 @@ class _MainPageState extends State<MainPage> {
               }
             },
             itemBuilder: (BuildContext context) => const [
-              PopupMenuItem<int>(value: 1, child: Center (child:(Text('Finding Category & Room'))
+              PopupMenuItem<int>(
+                value: 1,
+                child: Align(
+                  alignment: Alignment.centerLeft, // Aligns the text to the left
+                  child: Text('Finding Category & Room'),
                 ),
               ),
-              PopupMenuItem<int>(value: 2, child: Center (child:(Text('Delete Option'))
+              PopupMenuItem<int>(
+                value: 2,
+                child: Align(
+                  alignment: Alignment.centerLeft, // Aligns the text to the left
+                  child: Text('Delete Option'),
                 ),
               ),
             ],
@@ -163,7 +171,7 @@ class _MainPageState extends State<MainPage> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: const Text(
-                          'Group', // Replace with localized string
+                          'Category', // Replace with localized string
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.black,
@@ -367,7 +375,7 @@ class _MainPageState extends State<MainPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.userData['name'] ?? 'No Name',
+                          widget.userData['username'] ?? 'Full Name',
                           style: const TextStyle(
                             color: Color(0xFF9C27B0),
                             fontSize: 18,
@@ -375,7 +383,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                         Text(
-                          widget.userData['role'] ?? '',
+                          widget.userData['profession'] ?? 'Profession',
                           style: const TextStyle(
                             color: Color(0xFF9C27B0),
                             fontSize: 14,
@@ -480,18 +488,18 @@ class _MainPageState extends State<MainPage> {
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
-                          'John Doe',
-                          style: TextStyle(
+                          widget.userData['username'] ?? 'Full Name',
+                          style: const TextStyle(
                             color: Color(0xFF9C27B0),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          'Software Engineer',
-                          style: TextStyle(
+                          widget.userData['profession'] ?? 'Profession',
+                          style: const TextStyle(
                             color: Color(0xFF9C27B0),
                             fontSize: 14,
                           ),

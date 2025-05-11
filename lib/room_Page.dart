@@ -207,6 +207,7 @@ class RoomPage extends StatelessWidget {
         ),
         body: Column(
           children: [
+            // Image section
             Container(
               height: 200,
               margin: const EdgeInsets.all(16),
@@ -233,6 +234,11 @@ class RoomPage extends StatelessWidget {
                 ],
               ),
             ),
+
+            // Schedule title row
+            _buildTitleRow('Schedules'),
+
+            // TabBarView for each day
             const Expanded(
               child: TabBarView(
                 children: [
@@ -261,4 +267,37 @@ class RoomPage extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildTitleRow(String title) {
+  // Schedules
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 16.0),
+    child: Row(
+      children: [
+        const Expanded(
+          child: Divider(
+            color: Color(0xFF9C27B0),
+            thickness: 1,
+            endIndent: 8,
+          ),
+        ),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            color: Color(0xFF9C27B0),
+            fontFamily: 'sans-serif-medium',
+          ),
+        ),
+        const Expanded(
+          child: Divider(
+            color: Color(0xFF9C27B0),
+            thickness: 1,
+            indent: 8,
+          ),
+        ),
+      ],
+    ),
+  );
 }

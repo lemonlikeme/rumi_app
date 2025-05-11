@@ -265,7 +265,7 @@ class CategoryPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          userData['name'] ?? 'No Name',
+                          userData['username'] ?? 'Full Name',
                           style: const TextStyle(
                             color: Color(0xFF9C27B0),
                             fontSize: 18,
@@ -273,7 +273,7 @@ class CategoryPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          userData['role'] ?? '',
+                          userData['profession'] ?? 'Profession',
                           style: const TextStyle(
                             color: Color(0xFF9C27B0),
                             fontSize: 14,
@@ -381,18 +381,18 @@ class CategoryPage extends StatelessWidget {
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
-                          'John Doe',
-                          style: TextStyle(
+                          userData['username'] ?? 'Full Name',
+                          style: const TextStyle(
                             color: Color(0xFF9C27B0),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          'Software Engineer',
-                          style: TextStyle(
+                          userData['profession'] ?? 'Profession',
+                          style: const TextStyle(
                             color: Color(0xFF9C27B0),
                             fontSize: 14,
                           ),
