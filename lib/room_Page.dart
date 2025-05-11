@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rumi_roomapp/createSchedule_Page.dart';
-import 'my_App_Drawer.dart';
+import 'createSchedule_Page.dart';
+import 'my_App_Bar.dart';
 
 class RoomPage extends StatelessWidget {
   const RoomPage({super.key});
@@ -13,34 +13,16 @@ class RoomPage extends StatelessWidget {
     return DefaultTabController(
       length: 7,
       child: Scaffold(
-        drawer: const MyAppDrawer(),
-        appBar: AppBar(
-          title: Text('Room Page'),
+        appBar: MyAppBar(
+          title: roomName,
           iconTheme: const IconThemeData(color: Colors.white),
-          backgroundColor: const Color(0xFF9C27B0),
-          bottom: const TabBar(
-            isScrollable: true,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            indicatorColor: Colors.white,
-            indicatorWeight: 3,
-            tabs: [
-              Tab(text: 'Sun'),
-              Tab(text: 'Mon'),
-              Tab(text: 'Tue'),
-              Tab(text: 'Wed'),
-              Tab(text: 'Thu'),
-              Tab(text: 'Fri'),
-              Tab(text: 'Sat'),
-            ],
-          ),
           actions: [
             PopupMenuButton<int>(
               onSelected: (int value) {
                 if (value == 1) {
-                  // _getRoomCode(context);
+                  // Handle Get Code
                 } else if (value == 2) {
-                  // _showGainAccess(context);
+                  // Handle Gain Access
                 }
               },
               itemBuilder: (BuildContext context) => const [
@@ -49,6 +31,35 @@ class RoomPage extends StatelessWidget {
               ],
             ),
           ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: Container(
+              constraints: BoxConstraints(
+                minWidth: MediaQuery.of(context).size.width,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TabBar(
+                  isScrollable: false,
+                  padding: EdgeInsets.zero,
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  indicatorColor: Colors.white,
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.white70,
+                  indicatorWeight: 3,
+                  tabs: const [
+                    Tab(text: 'Sun'),
+                    Tab(text: 'Mon'),
+                    Tab(text: 'Tue'),
+                    Tab(text: 'Wed'),
+                    Tab(text: 'Thu'),
+                    Tab(text: 'Fri'),
+                    Tab(text: 'Sat'),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
         body: Column(
           children: [
@@ -97,7 +108,7 @@ class RoomPage extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CreateSchedulePage()),
+              MaterialPageRoute(builder: (context) => const CreateSchedulePage()),
             );
           },
           backgroundColor: const Color(0xFF9C27B0),
