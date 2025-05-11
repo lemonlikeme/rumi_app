@@ -19,7 +19,7 @@ class RoomPage extends StatelessWidget {
     return DefaultTabController(
       length: 7,
       child: Scaffold(
-        drawer: const MyAppDrawer(userData: {},),
+        drawer: MyAppDrawer(userData: userData),
         appBar: MyAppBar(
           title: roomName,
           iconTheme: const IconThemeData(color: Colors.white),

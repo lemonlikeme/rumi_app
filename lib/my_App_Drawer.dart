@@ -27,7 +27,8 @@ class MyAppDrawer extends StatelessWidget {
             leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
-              Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false,
+              arguments: userData);
             },
           ),
           ListTile(

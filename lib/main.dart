@@ -28,7 +28,10 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/login': (context) => MainScreen(),
-        '/main': (context) => MainPage(userData: {/* ... */}),
+        '/main': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return MainPage(userData: args);
+        },
         '/account': (context) => const AccountPage(),
         '/category': (context) => const CategoryPage(userData: {}),
         // Add more named routes as needed
