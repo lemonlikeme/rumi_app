@@ -1,13 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
 
-class CreateRoomPage extends StatelessWidget {
+class CreateRoomPage extends StatefulWidget {
   final Map<String, dynamic> userData;
   const CreateRoomPage({super.key, required this.userData});
 
   @override
+  State<CreateRoomPage> createState() => _CreateRoomPageState();
+}
+
+class _CreateRoomPageState extends State<CreateRoomPage> {
+  final TextEditingController _roomController = TextEditingController();
+  final TextEditingController _placeController = TextEditingController();
+  final TextEditingController _buildingController = TextEditingController();
+  final TextEditingController _chairsController = TextEditingController();
+
+  String generateRoomCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final rnd = Random();
+    return List.generate(6, (index) => chars[rnd.nextInt(chars.length)]).join();
+  }
+
+  Future<void> createRoom() async {
+    final room = _roomController.text.trim();
+    final place = _placeController.text.trim();
+    final building = _buildingController.text.trim();
+    final chairs = _chairsController.text.trim();
+
+    if (room.isEmpty || place.isEmpty || building.isEmpty || chairs.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    final roomCode = generateRoomCode();
+    final uid = widget.userData['id'];
+    final photo = widget.userData['photoUrl'] ?? ''; // Optional fallback
+
+    try {
+      await FirebaseFirestore.instance.collection('rooms').add({
+        'access': false,
+        'building': building,
+        'place': place,
+        'room': room,
+        'chairs': chairs,
+        'createdBy': uid,
+        'roomCode': roomCode,
+        'roomPhoto': photo,
+        'schedulesIds': [],
+        'userIds': [uid],
+        'groupIds': [],
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Room created successfully!')),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE6E6FA), // lavender background
+      backgroundColor: const Color(0xFFE6E6FA),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
@@ -15,16 +77,13 @@ class CreateRoomPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header with Back Button and Title
                 Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white,),
-                      onPressed: () => Navigator.pop(context, userData),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.pop(context, widget.userData),
                       style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          const Color(0xFF9C27B0),
-                        ),
+                        backgroundColor: WidgetStateProperty.all(const Color(0xFF9C27B0)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -33,31 +92,27 @@ class CreateRoomPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF9C27B0), // lavender_purple
+                        color: Color(0xFF9C27B0),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
-
-                // Room Name
-                _buildLabeledInput("Room Name:", "Enter room name"),
-                // Place
-                _buildLabeledInput("Place:", "Enter the place here"),
-                // Building
-                _buildLabeledInput("Building:", "Enter the building here"),
-                // Chairs
-                _buildLabeledInput("Chairs:", "How many chairs", inputType: TextInputType.number),
-
+                _buildLabeledInput("Room Name:", "Enter room name", controller: _roomController),
+                _buildLabeledInput("Place:", "Enter the place here", controller: _placeController),
+                _buildLabeledInput("Building:", "Enter the building here", controller: _buildingController),
+                _buildLabeledInput("Chairs:", "How many chairs", inputType: TextInputType.number, controller: _chairsController),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: createRoom,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9C27B0), // lavender_purple
+                    backgroundColor: const Color(0xFF9C27B0),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     textStyle: const TextStyle(fontSize: 16),
                   ),
-                  child: const Center(child: Text("Confirm", style: TextStyle(color: Colors.white),),),
+                  child: const Center(
+                    child: Text("Confirm", style: TextStyle(color: Colors.white)),
+                  ),
                 ),
               ],
             ),
@@ -67,7 +122,8 @@ class CreateRoomPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLabeledInput(String label, String hint, {TextInputType inputType = TextInputType.text}) {
+  Widget _buildLabeledInput(String label, String hint,
+      {TextInputType inputType = TextInputType.text, required TextEditingController controller}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -75,11 +131,12 @@ class CreateRoomPage extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 18,
-            color: Color(0xFF9C27B0), // lavender_purple
+            color: Color(0xFF9C27B0),
           ),
         ),
         const SizedBox(height: 8),
         TextField(
+          controller: controller,
           keyboardType: inputType,
           decoration: InputDecoration(
             hintText: hint,
@@ -89,7 +146,7 @@ class CreateRoomPage extends StatelessWidget {
             fillColor: Colors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF9C27B0)), // lavender_purple
+              borderSide: const BorderSide(color: Color(0xFF9C27B0)),
             ),
           ),
         ),
