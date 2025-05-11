@@ -22,6 +22,10 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _selectedGender;
   String? _selectedProfession;
 
+  // Password visibility toggles
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
+
   // Firebase instances
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -145,16 +149,38 @@ class _RegisterPageState extends State<RegisterPage> {
               _buildTextField(
                 hintText: 'Password',
                 prefixIcon: Icons.lock_outline,
-                obscureText: true,
+                obscureText: !_isPasswordVisible,
                 controller: _passwordController,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                ),
               ),
 
               // Confirm Password
               _buildTextField(
                 hintText: 'Confirm Password',
                 prefixIcon: Icons.lock_outline,
-                obscureText: true,
+                obscureText: !_isConfirmPasswordVisible,
                 controller: _confirmPasswordController,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                    });
+                  },
+                ),
               ),
 
               const SizedBox(height: 10),
@@ -223,6 +249,7 @@ class _RegisterPageState extends State<RegisterPage> {
     bool obscureText = false,
     TextInputType inputType = TextInputType.text,
     required TextEditingController controller,
+    Widget? suffixIcon,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
@@ -239,6 +266,7 @@ class _RegisterPageState extends State<RegisterPage> {
           hintText: hintText,
           hintStyle: TextStyle(color: Colors.deepPurple.shade200),
           prefixIcon: Icon(prefixIcon, color: Color(0xFF6A4C9C)),
+          suffixIcon: suffixIcon,
           border: InputBorder.none,
         ),
         style: const TextStyle(color: Color(0xFF6A4C9C)),
@@ -280,4 +308,3 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
-

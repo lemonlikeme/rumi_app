@@ -19,6 +19,8 @@ class _MainScreenState extends State<MainScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  bool _isPasswordVisible = false;
+
   void _login() async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -26,7 +28,6 @@ class _MainScreenState extends State<MainScreen> {
         password: _passwordController.text,
       );
 
-      // Get user data from Firestore
       DocumentSnapshot userDoc = await _firestore
           .collection('users')
           .doc(userCredential.user!.uid)
@@ -84,6 +85,7 @@ class _MainScreenState extends State<MainScreen> {
               SizedBox(height: 16),
               TextField(
                 controller: _passwordController,
+                obscureText: !_isPasswordVisible,
                 decoration: InputDecoration(
                   hintText: "Enter your password",
                   hintStyle: TextStyle(color: Color(0xFFA6A6A6)),
@@ -93,8 +95,18 @@ class _MainScreenState extends State<MainScreen> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  ),
                 ),
-                obscureText: true,
               ),
               SizedBox(height: 24),
               ElevatedButton(
