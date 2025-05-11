@@ -1,10 +1,69 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
-class CreateCategoryPage extends StatelessWidget {
-
+class CreateCategoryPage extends StatefulWidget {
   final Map<String, dynamic> userData;
 
   const CreateCategoryPage({super.key, required this.userData});
+
+  @override
+  _CreateCategoryPageState createState() => _CreateCategoryPageState();
+}
+
+class _CreateCategoryPageState extends State<CreateCategoryPage> {
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _placeController = TextEditingController();
+  final TextEditingController _buildingController = TextEditingController();
+
+  // Function to generate random 6 digit alphanumeric code
+  String generateGroupCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    Random rnd = Random();
+    return List.generate(6, (index) => chars[rnd.nextInt(chars.length)]).join();
+  }
+
+  // Function to handle saving the category to Firestore
+  Future<void> createCategory() async {
+    String categoryName = _categoryController.text.trim();
+    String placeName = _placeController.text.trim();
+    String buildingName = _buildingController.text.trim();
+    String groupCode = generateGroupCode(); // generate random code
+    List<String> roomIds = []; // Placeholder for room IDs, should be handled later
+    List<String> userIds = [widget.userData['uid']]; // Placeholder for user IDs, should be handled later
+
+    // Check if all fields are filled
+    if (categoryName.isEmpty || placeName.isEmpty || buildingName.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    // Save to Firestore
+    try {
+      await FirebaseFirestore.instance.collection('groups').add({
+        'category': categoryName,
+        'place': placeName,
+        'building': buildingName,
+        'groupCode': groupCode,
+        'roomIds': roomIds,
+        'userIds': userIds,
+      });
+
+      // Optionally, show a success message or navigate somewhere
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Category created successfully!')),
+      );
+
+      // You can navigate back or perform any other action after saving
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +83,8 @@ class CreateCategoryPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white,),
-                        onPressed: () => Navigator.pop(context, userData),
-                        style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all(
-                            const Color(0xFF9C27B0),
-                          ),
-                        ),
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () => Navigator.pop(context, widget.userData),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -60,6 +114,7 @@ class CreateCategoryPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 TextField(
+                  controller: _categoryController,
                   decoration: InputDecoration(
                     hintText: 'Enter category name',
                     hintStyle: const TextStyle(color: Colors.grey),
@@ -92,6 +147,7 @@ class CreateCategoryPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 TextField(
+                  controller: _placeController,
                   decoration: InputDecoration(
                     hintText: 'Enter the place here',
                     hintStyle: const TextStyle(color: Colors.grey),
@@ -124,6 +180,7 @@ class CreateCategoryPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 TextField(
+                  controller: _buildingController,
                   decoration: InputDecoration(
                     hintText: 'Enter the building here',
                     hintStyle: const TextStyle(color: Colors.grey),
@@ -146,9 +203,7 @@ class CreateCategoryPage extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Handle create group
-                    },
+                    onPressed: createCategory,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF9C27B0),
                       padding: const EdgeInsets.all(16),
@@ -171,3 +226,4 @@ class CreateCategoryPage extends StatelessWidget {
     );
   }
 }
+
