@@ -57,7 +57,7 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
       );
 
       // You can navigate back or perform any other action after saving
-      Navigator.pop(context);
+      Navigator.pushReplacementNamed(context, '/main', arguments: widget.userData);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
