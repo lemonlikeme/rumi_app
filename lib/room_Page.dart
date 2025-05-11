@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'createSchedule_Page.dart';
 import 'my_App_Bar.dart';
@@ -33,30 +34,25 @@ class RoomPage extends StatelessWidget {
           ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: Container(
-              constraints: BoxConstraints(
-                minWidth: MediaQuery.of(context).size.width,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: TabBar(
-                  isScrollable: false,
-                  padding: EdgeInsets.zero,
-                  labelPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  indicatorColor: Colors.white,
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.white70,
-                  indicatorWeight: 3,
-                  tabs: const [
-                    Tab(text: 'Sun'),
-                    Tab(text: 'Mon'),
-                    Tab(text: 'Tue'),
-                    Tab(text: 'Wed'),
-                    Tab(text: 'Thu'),
-                    Tab(text: 'Fri'),
-                    Tab(text: 'Sat'),
-                  ],
-                ),
+            child: SizedBox(
+              width: double.infinity,
+              child: TabBar(
+                isScrollable: false,
+                padding: EdgeInsets.zero,
+                labelPadding: EdgeInsets.zero,
+                indicatorColor: Colors.white,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white70,
+                indicatorWeight: 3,
+                tabs: const [
+                  Tab(text: 'Sun'),
+                  Tab(text: 'Mon'),
+                  Tab(text: 'Tue'),
+                  Tab(text: 'Wed'),
+                  Tab(text: 'Thu'),
+                  Tab(text: 'Fri'),
+                  Tab(text: 'Sat'),
+                ],
               ),
             ),
           ),
@@ -92,13 +88,13 @@ class RoomPage extends StatelessWidget {
             const Expanded(
               child: TabBarView(
                 children: [
-                  Center(child: Text('Content for Sun')),
-                  Center(child: Text('Content for Mon')),
-                  Center(child: Text('Content for Tue')),
-                  Center(child: Text('Content for Wed')),
-                  Center(child: Text('Content for Thu')),
-                  Center(child: Text('Content for Fri')),
-                  Center(child: Text('Content for Sat')),
+                  Center(child: Text('Content for Sunday')),
+                  Center(child: Text('Content for Monday')),
+                  Center(child: Text('Content for Tuesday')),
+                  Center(child: Text('Content for Wednesday')),
+                  Center(child: Text('Content for Thursday')),
+                  Center(child: Text('Content for Friday')),
+                  Center(child: Text('Content for Saturday')),
                 ],
               ),
             ),
