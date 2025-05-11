@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class CreateCategoryPage extends StatelessWidget {
-  const CreateCategoryPage({super.key});
+
+  final Map<String, dynamic> userData;
+
+  const CreateCategoryPage({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,7 @@ class CreateCategoryPage extends StatelessWidget {
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.arrow_back, color: Colors.white,),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => Navigator.pop(context, userData),
                         style: ButtonStyle(
                           backgroundColor: WidgetStateProperty.all(
                             const Color(0xFF9C27B0),

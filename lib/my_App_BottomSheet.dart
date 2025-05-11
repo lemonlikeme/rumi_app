@@ -3,7 +3,10 @@ import 'package:rumi_roomapp/createCategory_Page.dart';
 import 'package:rumi_roomapp/createRoom_Page.dart';
 
 class CustomBottomSheet extends StatelessWidget {
-  const CustomBottomSheet({super.key});
+
+  final Map<String, dynamic> userData;
+
+  const CustomBottomSheet({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,7 @@ class CustomBottomSheet extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CreateCategoryPage()),
+                MaterialPageRoute(builder: (context) => CreateCategoryPage(userData: userData)),
               );
             },
             child: Padding(
@@ -57,7 +60,7 @@ class CustomBottomSheet extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CreateRoomPage()),
+                MaterialPageRoute(builder: (context) => CreateRoomPage(userData: userData)),
               );
             },
             child: Padding(

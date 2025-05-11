@@ -6,7 +6,10 @@ import 'my_App_Drawer.dart';
 
 
 class RoomPage extends StatelessWidget {
-  const RoomPage({super.key});
+
+  final Map<String, dynamic> userData;
+
+  const RoomPage({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +252,7 @@ class RoomPage extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const CreateSchedulePage()),
+              MaterialPageRoute(builder: (context) => CreateSchedulePage(userData: userData)),
             );
           },
           backgroundColor: const Color(0xFF9C27B0),

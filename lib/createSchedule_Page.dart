@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CreateSchedulePage extends StatelessWidget {
-  const CreateSchedulePage({super.key});
+
+  final Map<String, dynamic> userData;
+  const CreateSchedulePage({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class CreateSchedulePage extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pop(context, userData),
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(const Color(0xFF9C27B0)),
                     ),

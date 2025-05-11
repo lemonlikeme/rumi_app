@@ -39,7 +39,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MyAppDrawer(),
+      drawer: MyAppDrawer(userData: widget.userData),
       appBar: MyAppBar(
         title: 'Welcome, ${widget.userData['username'] ?? 'User'}!',
         iconTheme: const IconThemeData(color: Colors.white),
@@ -84,7 +84,7 @@ class _MainPageState extends State<MainPage> {
             context: context,
             backgroundColor: Colors.transparent, // optional, for rounded corners
             isScrollControlled: true,            // allows full-height bottom sheet
-            builder: (context) => const CustomBottomSheet(),
+            builder: (context) => CustomBottomSheet(userData: widget.userData),
           );
         },
         backgroundColor: const Color(0xFF9C27B0),
@@ -144,7 +144,7 @@ class _MainPageState extends State<MainPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const CategoryPage(userData: {}),
+                  builder: (context) => CategoryPage(userData: widget.userData),
                   settings: RouteSettings(
                     arguments: 'Category ${index + 1}', // Pass data if needed
                   ),
@@ -238,7 +238,7 @@ class _MainPageState extends State<MainPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const RoomPage(),
+                  builder: (context) => RoomPage(userData: widget.userData),
                   settings: const RouteSettings(
                     arguments: 'Room Name',
                   ),

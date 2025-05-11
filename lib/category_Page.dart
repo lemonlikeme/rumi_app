@@ -18,7 +18,7 @@ class CategoryPage extends StatelessWidget {
     final String categoryName = ModalRoute.of(context)!.settings.arguments as String? ?? 'Category';
 
     return Scaffold(
-      drawer: const MyAppDrawer(),
+      drawer: MyAppDrawer(userData: userData),
       appBar: MyAppBar(
         title: categoryName,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -57,7 +57,7 @@ class CategoryPage extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateRoomPage()),
+            MaterialPageRoute(builder: (context) => CreateRoomPage(userData: userData)),
           );
         },
         backgroundColor: const Color(0xFF9C27B0),
@@ -117,7 +117,7 @@ class CategoryPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const RoomPage(),
+                  builder: (context) => RoomPage(userData: userData),
                   settings: const RouteSettings(
                     arguments: 'Room Name',
                   ),

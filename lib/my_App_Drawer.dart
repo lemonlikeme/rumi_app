@@ -5,7 +5,8 @@ import 'package:rumi_roomapp/account_Page.dart';
 import 'main_screen.dart';
 
 class MyAppDrawer extends StatelessWidget {
-  const MyAppDrawer({super.key});
+  final Map<String, dynamic> userData;
+  const MyAppDrawer({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +14,10 @@ class MyAppDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
+          DrawerHeader(
             decoration: BoxDecoration(color: Color(0xFF9C27B0)),
             child: Text(
-              'Profile Header',
+              '${userData['fullName'] ?? 'User'}!',
               style: TextStyle(color: Colors.white, fontSize: 24),
             ),
           ),
