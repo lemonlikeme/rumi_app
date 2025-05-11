@@ -22,7 +22,149 @@ class RoomPage extends StatelessWidget {
                 if (value == 1) {
                   // Handle Get Code
                 } else if (value == 2) {
-                  // Handle Gain Access
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      bool isPrivate = false;
+
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return AlertDialog(
+                            backgroundColor: Color(0xFFE6E6FA), // lavender
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            contentPadding: EdgeInsets.all(16),
+                            content: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 48,
+                                        height: 48,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF9C27B0),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: IconButton(
+                                          icon: Icon(Icons.close, color: Colors.white),
+                                          onPressed: () => Navigator.pop(context),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        "Access",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF9C27B0),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20),
+                                  Text(
+                                    "You're currently Signed in as:",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Color(0xFF9C27B0),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: Color(0xFF9C27B0), width: 2),
+                                        ),
+                                        child: Icon(Icons.person_outline, size: 40),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Name", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF9C27B0))),
+                                          Text("Profession", style: TextStyle(fontSize: 15, color: Color(0xFF9C27B0))),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 16),
+                                  Divider(color: Colors.grey),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    "Toggle:",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF9C27B0),
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    "Toggling this will enable Owner-Only Interactions",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontStyle: FontStyle.italic,
+                                      color: Color(0xFF9C27B0),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Color(0xFF9C27B0), width: 2),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("Private mode:",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Color(0xFF9C27B0),
+                                                fontWeight: FontWeight.bold)),
+                                        Switch(
+                                          value: isPrivate,
+                                          onChanged: (value) {
+                                            setState(() => isPrivate = value);
+                                          },
+                                          activeColor: Colors.white,
+                                          activeTrackColor: Color(0xFF9C27B0),
+                                          inactiveThumbColor: Colors.white,
+                                          inactiveTrackColor: Colors.grey.shade400,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 20),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFF9C27B0),
+                                        padding: EdgeInsets.symmetric(vertical: 12),
+                                      ),
+                                      child: Text("Confirm", style: TextStyle(color: Colors.white)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
                 }
               },
               itemBuilder: (BuildContext context) => const [

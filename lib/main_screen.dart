@@ -66,7 +66,22 @@ class _MainScreenState extends State<MainScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.account_circle, size: 160, color: Colors.grey),
+              Container(
+                padding: const EdgeInsets.all(12), // space between icon and border
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                    color: Color(0xFF9C27B0),
+                    width: 5,
+                  ),
+                  borderRadius: BorderRadius.circular(100), // adjusted to fit tighter
+                ),
+                child: const Icon(
+                  Icons.account_circle,
+                  size: 160, // slightly smaller
+                  color: Colors.grey,
+                ),
+              ),
               SizedBox(height: 32),
               TextField(
                 controller: _emailController,
