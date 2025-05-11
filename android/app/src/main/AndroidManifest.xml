@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="rumi_roomapp"
-        android:name="${applicationName}"
+        android:label="Rumi"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
