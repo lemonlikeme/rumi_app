@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rumi_roomapp/createRoom_Page.dart';
 import 'package:rumi_roomapp/room_Page.dart';
 
@@ -15,12 +16,13 @@ class CategoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String categoryName = ModalRoute.of(context)!.settings.arguments as String? ?? 'Category';
+    final String categoryId = ModalRoute.of(context)!.settings.arguments as String? ?? 'Category';
+    final String userId = userData['userIds']?[0] ?? '';
 
     return Scaffold(
       drawer: MyAppDrawer(userData: userData),
       appBar: MyAppBar(
-        title: categoryName,
+        title: "Category", // You can display category name dynamically after fetching it
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           PopupMenuButton<int>(
@@ -29,7 +31,7 @@ class CategoryPage extends StatelessWidget {
                 _showFindingRoom(context);
               } else if (value == 2) {
                 _showDeleteOption(context);
-              } else if (value == 3 ) {
+              } else if (value == 3) {
                 // Copy the Category Code
               }
             },
@@ -41,33 +43,44 @@ class CategoryPage extends StatelessWidget {
           ),
         ],
       ),
-
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               _buildTitleRow('Rooms'),
-              _buildRoomRecyclerView(),
+              _buildRoomRecyclerView(categoryId),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          // Pass categoryId to CreateRoomPage and wait for the result
+          final result = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateRoomPage(userData: userData)),
+            MaterialPageRoute(
+              builder: (context) => CreateRoomPage(
+                userData: userData,
+                categoryId: categoryId, // Pass the categoryId
+              ),
+            ),
           );
+
+          // Optionally, handle the result (if needed)
+          if (result == true) {
+            // Optionally do something after successful room creation
+            // For example, you might want to refresh the page (e.g., using setState).
+          }
         },
         backgroundColor: const Color(0xFF9C27B0),
         child: const Icon(Icons.add, color: Colors.white),
       ),
+
     );
   }
 
   Widget _buildTitleRow(String title) {
-    // Category
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Row(
@@ -99,120 +112,140 @@ class CategoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRoomRecyclerView() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return Card(
-          margin: const EdgeInsets.fromLTRB(8, 15, 8, 5),
-          color: const Color(0xFF9C27B0), // Replace with your 'blueBlack'
-          elevation: 12,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RoomPage(userData: userData),
-                  settings: const RouteSettings(
-                    arguments: 'Room Name',
-                  ),
-                ),
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/stripes_fade.png'),
-                  fit: BoxFit.cover,
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(24)),
+  Widget _buildRoomRecyclerView(String categoryId) {
+    final firestore = FirebaseFirestore.instance;
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: firestore
+          .collection('rooms')
+          .where('categoryId', isEqualTo: categoryId)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Text('Error loading rooms'));
+        }
+
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final rooms = snapshot.data!.docs;
+
+        if (rooms.isEmpty) {
+          return const Center(child: Text('No rooms in this category'));
+        }
+
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: rooms.length,
+          itemBuilder: (context, index) {
+            final room = rooms[index];
+            final data = room.data() as Map<String, dynamic>;
+
+            return Card(
+              margin: const EdgeInsets.fromLTRB(8, 15, 8, 5),
+              color: const Color(0xFF9C27B0),
+              elevation: 12,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Row: Room name and pill label
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Room Name', // Replace with dynamic value
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFEFEFEF),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Text(
-                          'Room',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  // Row: Place and Building
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Places',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Color(0xFFEFEFEF),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Buildings',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Color(0xFFEFEFEF),
-                          ),
-                          textAlign: TextAlign.right,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Text(
-                      'No. of chairs',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFFEFEFEF),
-                      ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RoomPage(userData: userData),
+                      settings: RouteSettings(arguments: data['name'] ?? 'Room Name'),
                     ),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/stripes_fade.png'),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(24)),
                   ),
-                ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            data['name'] ?? 'Room Name',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFEFEFEF),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Text(
+                              'Room',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              data['places']?.toString() ?? 'Places',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFFEFEFEF),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              data['buildings']?.toString() ?? 'Buildings',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFFEFEFEF),
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Text(
+                          '${data['chairs']?.toString() ?? '0'} chairs',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFFEFEFEF),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
   }
 
-
-  void _showFindingRoom(BuildContext context) {
+void _showFindingRoom(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

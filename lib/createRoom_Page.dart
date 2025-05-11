@@ -28,6 +28,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
     final building = _buildingController.text.trim();
     final chairs = _chairsController.text.trim();
 
+
     if (room.isEmpty || place.isEmpty || building.isEmpty || chairs.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields')),
