@@ -215,11 +215,27 @@ class RoomPage extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.asset(
-                      'assets/image_classroom.png',
-                      width: double.infinity,
-                      height: double.infinity,
-                      fit: BoxFit.cover,
+                    child: Center(
+                      child: Container(
+                        width: double.infinity,
+                        height: 200, // Adjust height for desired oval appearance
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.white, // Or any background color
+                          border: Border.all(
+                            color: Color(0xFF9C27B0),
+                            width: 4,
+                          ),
+                          borderRadius: BorderRadius.circular(100), // Oval effect
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.image, // Placeholder icon
+                            size: 80,
+                            color: Color(0xFF9C27B0),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Positioned(
