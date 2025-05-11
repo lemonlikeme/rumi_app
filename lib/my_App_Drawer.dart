@@ -10,6 +10,8 @@ class MyAppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -42,10 +44,10 @@ class MyAppDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () async {
-              await FirebaseAuth.instance.signOut(); // Sign out from Firebase
+              await FirebaseAuth.instance.signOut();
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const MainScreen()),
-                    (route) => false, // Remove all previous routes
+                    (route) => false,
               );
             },
           ),
