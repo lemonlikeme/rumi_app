@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -8,19 +9,42 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = false;
+
+  void _resetPassword() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _auth.sendPasswordResetEmail(email: _emailController.text.trim());
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password reset email sent!")),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE6E6FA), // #E6E6FA (Lavender)
+      backgroundColor: const Color(0xFFE6E6FA),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Back Button and Title
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -32,7 +56,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF9C27B0), // Lavender Purple
+                        color: const Color(0xFF9C27B0),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
@@ -52,16 +76,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 32),
-
-              // Email Input
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   hintText: 'Enter your email address',
                   hintStyle: const TextStyle(color: Colors.grey),
                   filled: true,
-                  fillColor: const Color(0xFFB39DDB), // Lavender Purple
+                  fillColor: const Color(0xFFB39DDB),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
@@ -71,10 +93,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 keyboardType: TextInputType.emailAddress,
                 style: const TextStyle(color: Colors.black),
               ),
-
               const SizedBox(height: 24),
-
-              // Reset Button and Progress Bar
               Stack(
                 alignment: Alignment.center,
                 children: [
@@ -83,24 +102,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () {
-                      setState(() {
-                        _isLoading = true;
-                      });
-
-                      // Simulate a delay (e.g., API call)
-                      Future.delayed(const Duration(seconds: 3), () {
-                        setState(() {
-                          _isLoading = false;
-                        });
-
-                        // Handle password reset logic here
-                      });
-                    },
+                    onPressed: _isLoading ? null : _resetPassword,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF9C27B0), // Lavender Purple
+                      backgroundColor: const Color(0xFF9C27B0),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
