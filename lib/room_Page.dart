@@ -301,17 +301,42 @@ class _RoomPageState extends State<RoomPage> {
               ),
             ),
             _buildTitleRow('Schedules'),
-            const Expanded(
+            Expanded(
               child: TabBarView(
-                children: [
-                  Center(child: Text('Content for Sunday')),
-                  Center(child: Text('Content for Monday')),
-                  Center(child: Text('Content for Tuesday')),
-                  Center(child: Text('Content for Wednesday')),
-                  Center(child: Text('Content for Thursday')),
-                  Center(child: Text('Content for Friday')),
-                  Center(child: Text('Content for Saturday')),
-                ],
+                children: List.generate(7, (index) {
+                  // Dummy data (you'll later fetch from backend or state)
+                  return ListView(
+                    padding: const EdgeInsets.only(bottom: 80),
+                    children: [
+                      ScheduleCard(
+                        professor: "Prof. Jane Doe",
+                        subject: "Math 101",
+                        startTime: "8:00 AM",
+                        endTime: "9:30 AM",
+                        section: "A",
+                        course: "BSCS",
+                        onDelete: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Deleted!")),
+                          );
+                        },
+                      ),
+                      ScheduleCard(
+                        professor: "Prof. John Smith",
+                        subject: "Physics 201",
+                        startTime: "10:00 AM",
+                        endTime: "11:30 AM",
+                        section: "B",
+                        course: "BSIT",
+                        onDelete: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Deleted!")),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                }),
               ),
             ),
           ],
@@ -325,6 +350,149 @@ class _RoomPageState extends State<RoomPage> {
     );
   }
 }
+class ScheduleCard extends StatelessWidget {
+  final String professor;
+  final String subject;
+  final String startTime;
+  final String endTime;
+  final String section;
+  final String course;
+  final VoidCallback onDelete;
+
+  const ScheduleCard({
+    super.key,
+    required this.professor,
+    required this.subject,
+    required this.startTime,
+    required this.endTime,
+    required this.section,
+    required this.course,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: const Color(0xFF9C27B0), // Substitute for blueBlack
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      elevation: 12,
+      child: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(24)),
+          image: DecorationImage(
+            image: AssetImage('assets/stripes_fade2.png'), // Match your Android background
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Top Row: Professor & Delete button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    style: const TextStyle(color: Colors.white, fontSize: 20),
+                    children: [
+                      const TextSpan(
+                        text: 'Professor: ',
+                        style: TextStyle(fontWeight: FontWeight.normal),
+                      ),
+                      TextSpan(
+                        text: professor,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: onDelete,
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.white.withOpacity(0.2),
+                    padding: const EdgeInsets.all(4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                )
+              ],
+            ),
+
+            const SizedBox(height: 8),
+
+            // Subject
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(color: Colors.white, fontSize: 20),
+                children: [
+                  const TextSpan(text: 'Subject: '),
+                  TextSpan(
+                    text: subject,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 6),
+
+            // Time
+            Row(
+              children: [
+                const Text(
+                  'Time: ',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                Text(
+                  '$startTime - $endTime',
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 6),
+
+            // Course & Section Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      'Course: ',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    Text(
+                      course,
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text(
+                      'Section: ',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    Text(
+                      section,
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 Widget _buildTitleRow(String title) {
   return Padding(

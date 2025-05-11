@@ -470,8 +470,5 @@ class CategoryPage extends StatelessWidget {
       },
     );
   }
-
-
-
 }
 

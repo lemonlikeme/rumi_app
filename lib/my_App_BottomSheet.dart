@@ -12,26 +12,27 @@ class CustomBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white, // Replace with a background image or drawable equivalent if needed
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        image: const DecorationImage(
-          image: AssetImage('assets/dialogbkg.png'), // If dialogbkg is an image
-          fit: BoxFit.cover,
-        ),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 16),
-          SizedBox(
+
+          // Replace Image.asset with an icon (e.g., line or box)
+          Container(
             width: 70,
-            child: Image.asset(
-              'assets/baseline_remove_24.png',
-              fit: BoxFit.cover,
+            height: 4,
+            decoration: BoxDecoration(
+              color: const Color(0xFF9C27B0),
+              borderRadius: BorderRadius.circular(2),
             ),
           ),
+
           const SizedBox(height: 16),
+
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -56,6 +57,7 @@ class CustomBottomSheet extends StatelessWidget {
               ),
             ),
           ),
+
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -80,8 +82,10 @@ class CustomBottomSheet extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 128),
         ],
       ),
     );
   }
+
 }
