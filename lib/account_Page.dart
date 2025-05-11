@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
 class AccountPage extends StatefulWidget {
   final Map<String, dynamic> userData;
+
   const AccountPage({super.key, required this.userData});
 
   @override
@@ -15,6 +17,7 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   File? _profileImage;
   String? _cloudinaryUrl;
+  final _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -31,9 +34,13 @@ class _AccountPageState extends State<AccountPage> {
       });
       final url = await _uploadToCloudinary(_profileImage!);
       if (url != null) {
+
+        await _savePhotoUrlToFirestore(url);
+
         setState(() {
           _cloudinaryUrl = url;
         });
+        widget.userData['photoProfile'] = url;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile photo updated!')),
         );
@@ -57,6 +64,19 @@ class _AccountPageState extends State<AccountPage> {
         const SnackBar(content: Text('Cloudinary upload failed')),
       );
       return null;
+    }
+  }
+
+  Future<void> _savePhotoUrlToFirestore(String url) async {
+    final id = widget.userData['id'];
+    if (id != null) {
+      await _firestore.collection('users').doc(id).set(
+        {'photoProfile': url},
+        SetOptions(merge: true),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile photo updated!')),
+      );
     }
   }
 
@@ -155,7 +175,7 @@ class _AccountPageState extends State<AccountPage> {
               const SizedBox(height: 20),
               FloatingActionButton(
                 backgroundColor: Colors.deepPurple,
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(context, widget.userData),
                 child: const Icon(Icons.arrow_back, color: Colors.white),
               ),
               const SizedBox(height: 20),
