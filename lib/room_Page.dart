@@ -1,15 +1,59 @@
-
+import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'createSchedule_Page.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+
 import 'my_App_Bar.dart';
 import 'my_App_Drawer.dart';
 
-
-class RoomPage extends StatelessWidget {
-
+class RoomPage extends StatefulWidget {
   final Map<String, dynamic> userData;
 
   const RoomPage({super.key, required this.userData});
+
+  @override
+  State<RoomPage> createState() => _RoomPageState();
+}
+
+class _RoomPageState extends State<RoomPage> {
+  String? _roomImageUrl;
+  File? _localRoomImage;
+
+  Future<void> _pickRoomImage() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _localRoomImage = File(picked.path);
+      });
+      final url = await _uploadToCloudinary(_localRoomImage!);
+      if (url != null) {
+        setState(() {
+          _roomImageUrl = url;
+        });
+      }
+    }
+  }
+
+  Future<String?> _uploadToCloudinary(File imageFile) async {
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/dxvewejox/image/upload');
+    final request = http.MultipartRequest('POST', url)
+      ..fields['upload_preset'] = 'dxvewejox'
+      ..files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      final respStr = await response.stream.bytesToString();
+      final data = json.decode(respStr);
+      return data['secure_url'];
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cloudinary upload failed')),
+      );
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +63,7 @@ class RoomPage extends StatelessWidget {
     return DefaultTabController(
       length: 7,
       child: Scaffold(
-        drawer: MyAppDrawer(userData: userData),
+        drawer: MyAppDrawer(userData: widget.userData),
         appBar: MyAppBar(
           title: roomName,
           iconTheme: const IconThemeData(color: Colors.white),
@@ -37,7 +81,7 @@ class RoomPage extends StatelessWidget {
                       return StatefulBuilder(
                         builder: (context, setState) {
                           return AlertDialog(
-                            backgroundColor: Color(0xFFE6E6FA), // lavender
+                            backgroundColor: Color(0xFFE6E6FA),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -207,30 +251,36 @@ class RoomPage extends StatelessWidget {
         ),
         body: Column(
           children: [
-            // Image section
+            // Perfectly oval image with purple border
             Container(
-              height: 200,
+              height: 180,
               margin: const EdgeInsets.all(16),
               child: Stack(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Center(
-                      child: Container(
-                        width: double.infinity,
-                        height: 200, // Adjust height for desired oval appearance
-                        margin: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.white, // Or any background color
-                          border: Border.all(
-                            color: Color(0xFF9C27B0),
-                            width: 4,
-                          ),
-                          borderRadius: BorderRadius.circular(100), // Oval effect
+                  Center(
+                    child: Container(
+                      width: 320,
+                      height: 180,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Color(0xFF9C27B0),
+                          width: 4,
                         ),
-                        child: const Center(
+                        borderRadius: BorderRadius.circular(90),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(90),
+                        child: _roomImageUrl != null
+                            ? Image.network(
+                          _roomImageUrl!,
+                          fit: BoxFit.cover,
+                          width: 320,
+                          height: 180,
+                        )
+                            : const Center(
                           child: Icon(
-                            Icons.image, // Placeholder icon
+                            Icons.image,
                             size: 80,
                             color: Color(0xFF9C27B0),
                           ),
@@ -240,9 +290,9 @@ class RoomPage extends StatelessWidget {
                   ),
                   Positioned(
                     bottom: 16,
-                    right: 16,
+                    right: 32,
                     child: FloatingActionButton.small(
-                      onPressed: () {},
+                      onPressed: _pickRoomImage,
                       backgroundColor: const Color(0xFF9C27B0),
                       child: const Icon(Icons.edit, color: Colors.white),
                     ),
@@ -250,11 +300,7 @@ class RoomPage extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Schedule title row
             _buildTitleRow('Schedules'),
-
-            // TabBarView for each day
             const Expanded(
               child: TabBarView(
                 children: [
@@ -271,12 +317,7 @@ class RoomPage extends StatelessWidget {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CreateSchedulePage(userData: userData)),
-            );
-          },
+          onPressed: _pickRoomImage,
           backgroundColor: const Color(0xFF9C27B0),
           child: const Icon(Icons.add, color: Colors.white),
         ),
@@ -286,7 +327,6 @@ class RoomPage extends StatelessWidget {
 }
 
 Widget _buildTitleRow(String title) {
-  // Schedules
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 16.0),
     child: Row(
