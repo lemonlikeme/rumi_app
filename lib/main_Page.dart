@@ -41,7 +41,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       drawer: const MyAppDrawer(),
       appBar: MyAppBar(
-        title: 'Hi!',
+        title: 'Welcome, ${widget.userData['username'] ?? 'User'}!',
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           PopupMenuButton<int>(

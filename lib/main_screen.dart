@@ -34,6 +34,7 @@ class _MainScreenState extends State<MainScreen> {
 
       if (userDoc.exists) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+        userData['id'] = userDoc.id;
 
         Navigator.pushReplacement(
           context,
