@@ -1,19 +1,98 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AccountPage extends StatelessWidget {
+class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
+
+  @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
+  File? _profileImage;
+  String? _cloudinaryUrl;
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfilePhoto();
+  }
+
+  Future<void> _loadProfilePhoto() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final doc = await _firestore.collection('users').doc(user.uid).get();
+      setState(() {
+        _cloudinaryUrl = doc.data()?['photoProfile'];
+      });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _profileImage = File(picked.path);
+      });
+      final url = await _uploadToCloudinary(_profileImage!);
+      if (url != null) {
+        await _savePhotoUrlToFirestore(url);
+        setState(() {
+          _cloudinaryUrl = url;
+        });
+      }
+    }
+  }
+
+  Future<String?> _uploadToCloudinary(File imageFile) async {
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/dxvewejox/image/upload');
+    final request = http.MultipartRequest('POST', url)
+      ..fields['upload_preset'] = 'dxvewejox'
+      ..files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      final respStr = await response.stream.bytesToString();
+      final data = json.decode(respStr);
+      return data['secure_url'];
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cloudinary upload failed')),
+      );
+      return null;
+    }
+  }
+
+  Future<void> _savePhotoUrlToFirestore(String url) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await _firestore.collection('users').doc(user.uid).set(
+        {'photoProfile': url},
+        SetOptions(merge: true),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile photo updated!')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE6E6FA), // Lavender background
+      backgroundColor: const Color(0xFFE6E6FA),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 16),
-
-              // Profile Image with Edit Button
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Stack(
@@ -33,8 +112,10 @@ class AccountPage extends StatelessWidget {
                             offset: Offset(0, 4),
                           ),
                         ],
-                        image: const DecorationImage(
-                          image: AssetImage('assets/baseline_person_outline_24.png'),
+                        image: DecorationImage(
+                          image: _cloudinaryUrl != null
+                              ? NetworkImage(_cloudinaryUrl!)
+                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -48,17 +129,13 @@ class AccountPage extends StatelessWidget {
                         elevation: 4,
                         child: IconButton(
                           icon: const Icon(Icons.edit, color: Colors.white),
-                          onPressed: () {
-                            // Change photo action
-                          },
+                          onPressed: _pickImage,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              // Full Name Row
               _buildInfoRow(
                 context,
                 hint: 'Full Name',
@@ -67,24 +144,18 @@ class AccountPage extends StatelessWidget {
                   _renameFullName(context);
                 },
               ),
-
-              // Email Row
               _buildInfoRow(
                 context,
                 hint: 'Email',
                 icon: Icons.email_outlined,
                 showEditButton: false,
               ),
-
-              // Phone Number Row
               _buildInfoRow(
                 context,
                 hint: 'Phone Number',
                 icon: Icons.local_phone_outlined,
                 showEditButton: false,
               ),
-
-              // Password Row
               _buildInfoRow(
                 context,
                 hint: 'Password',
@@ -93,8 +164,6 @@ class AccountPage extends StatelessWidget {
                   _resetPassword(context);
                 },
               ),
-
-              // Gender and Profession side-by-side
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
@@ -115,8 +184,6 @@ class AccountPage extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Back Button
               const SizedBox(height: 20),
               FloatingActionButton(
                 backgroundColor: Colors.deepPurple,
@@ -166,7 +233,7 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  void _renameFullName (BuildContext context) {
+  void _renameFullName(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -219,7 +286,6 @@ class AccountPage extends StatelessWidget {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle confirm action
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -240,7 +306,7 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  void _resetPassword (BuildContext context) {
+  void _resetPassword(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -306,7 +372,6 @@ class AccountPage extends StatelessWidget {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle confirm action
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -326,7 +391,6 @@ class AccountPage extends StatelessWidget {
       },
     );
   }
-
 
   Widget _buildSimpleInfoBox({required String hint, required IconData icon}) {
     return Container(
