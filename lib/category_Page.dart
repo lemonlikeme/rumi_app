@@ -134,7 +134,7 @@ class CategoryPage extends StatelessWidget {
           itemBuilder: (context, index) {
             final room = filteredRooms[index];
             final roomData = room.data() as Map<String, dynamic>;
-
+            final roomId = room.id;
             return Card(
               margin: const EdgeInsets.fromLTRB(8, 15, 8, 5),
               color: const Color(0xFF9C27B0),
@@ -144,10 +144,15 @@ class CategoryPage extends StatelessWidget {
               ),
               child: InkWell(
                 onTap: () {
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RoomPage(userData: userData),
+                      builder: (context) => RoomPage(
+                          userData: userData,
+                          roomId: roomId,
+                          categoryId: categoryId,
+                      ),
                       settings: RouteSettings(arguments: roomData['name']),
                     ),
                   );

@@ -248,10 +248,14 @@ class _MainPageState extends State<MainPage> {
               ),
               child: InkWell(
                 onTap: () {
+                  String docId = docs[index].id;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RoomPage(userData: widget.userData),
+                      builder: (context) => RoomPage(
+                          userData: widget.userData,
+                          roomId: docId,
+                      ),
                       settings: RouteSettings(arguments: data['name']),
                     ),
                   );

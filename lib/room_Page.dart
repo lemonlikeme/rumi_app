@@ -5,22 +5,33 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:rumi_roomapp/createRoom_Page.dart';
 import 'package:rumi_roomapp/createSchedule_Page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'my_App_Bar.dart';
 import 'my_App_Drawer.dart';
 
 class RoomPage extends StatefulWidget {
   final Map<String, dynamic> userData;
-
-  const RoomPage({super.key, required this.userData});
+  final String roomId;
+  final String? categoryId;
+  const RoomPage({super.key, required this.userData, required this.roomId, this.categoryId});
 
   @override
   State<RoomPage> createState() => _RoomPageState();
 }
 
 class _RoomPageState extends State<RoomPage> {
+
   String? _roomImageUrl;
   File? _localRoomImage;
+  Map<String, List<Map<String, dynamic>>> _schedulesByDay = {};
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSchedules();
+  }
 
   Future<void> _pickRoomImage() async {
     final picker = ImagePicker();
@@ -55,6 +66,31 @@ class _RoomPageState extends State<RoomPage> {
       );
       return null;
     }
+  }
+
+  Future<void> _fetchSchedules() async {
+    setState(() => _isLoading = true);
+
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('schedules')
+        .where('roomIds', arrayContains: widget.roomId)
+        .get();
+
+    final tempSchedules = <String, List<Map<String, dynamic>>>{};
+
+    for (var doc in querySnapshot.docs) {
+      final schedule = doc.data();
+      final day = schedule['days']; // e.g., "Monday"
+
+      if (day != null) {
+        tempSchedules.putIfAbsent(day, () => []).add(schedule);
+      }
+    }
+
+    setState(() {
+      _schedulesByDay = tempSchedules;
+      _isLoading = false;
+    });
   }
 
   @override
@@ -304,41 +340,31 @@ class _RoomPageState extends State<RoomPage> {
             ),
             _buildTitleRow('Schedules'),
             Expanded(
-              child: TabBarView(
-                children: List.generate(7, (index) {
-                  // Dummy data (you'll later fetch from backend or state)
-                  return ListView(
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : TabBarView(
+                children: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) {
+                  final schedules = _schedulesByDay[day] ?? [];
+                  return ListView.builder(
                     padding: const EdgeInsets.only(bottom: 80),
-                    children: [
-                      ScheduleCard(
-                        professor: "Prof. Jane Doe",
-                        subject: "Math 101",
-                        startTime: "8:00 AM",
-                        endTime: "9:30 AM",
-                        section: "A",
-                        course: "BSCS",
+                    itemCount: schedules.length,
+                    itemBuilder: (context, index) {
+                      final sched = schedules[index];
+                      return ScheduleCard(
+                        professor: sched['professor'] ?? '',
+                        subject: sched['subject'] ?? '',
+                        startTime: sched['startTime'] ?? '',
+                        endTime: sched['endTime'] ?? '',
+                        section: sched['section'] ?? '',
+                        course: sched['course'] ?? '',
                         onDelete: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Deleted!")),
-                          );
+                          // TODO: Add Firestore delete logic
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deleted')));
                         },
-                      ),
-                      ScheduleCard(
-                        professor: "Prof. John Smith",
-                        subject: "Physics 201",
-                        startTime: "10:00 AM",
-                        endTime: "11:30 AM",
-                        section: "B",
-                        course: "BSIT",
-                        onDelete: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Deleted!")),
-                          );
-                        },
-                      ),
-                    ],
+                      );
+                    },
                   );
-                }),
+                }).toList(),
               ),
             ),
           ],
