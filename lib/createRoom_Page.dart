@@ -92,9 +92,13 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFE6E6FA),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
@@ -105,7 +109,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
                 Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      icon: Icon(Icons.arrow_back, color: colorScheme.onPrimary),
                       onPressed: () {
                         if (widget.categoryId == null) {
                           Navigator.pushReplacementNamed(context, '/main', arguments: widget.userData);
@@ -117,36 +121,35 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
                         }
                       },
                       style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(const Color(0xFF9C27B0)),
+                        backgroundColor: WidgetStateProperty.all(colorScheme.primary),
                       ),
                     ),
                     const SizedBox(width: 16),
-                    const Text(
+                    Text(
                       "Create a Room",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF9C27B0),
+                        color: colorScheme.primary,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
-                _buildLabeledInput("Room Name:", "Enter room name", controller: _roomController),
-                _buildLabeledInput("Place:", "Enter the place here", controller: _placeController),
-                _buildLabeledInput("Building:", "Enter the building here", controller: _buildingController),
-                _buildLabeledInput("Chairs:", "How many chairs", inputType: TextInputType.number, controller: _chairsController),
+                _buildLabeledInput("Room Name:", "Enter room name", controller: _roomController, colorScheme: colorScheme),
+                _buildLabeledInput("Place:", "Enter the place here", controller: _placeController, colorScheme: colorScheme),
+                _buildLabeledInput("Building:", "Enter the building here", controller: _buildingController, colorScheme: colorScheme),
+                _buildLabeledInput("Chairs:", "How many chairs", inputType: TextInputType.number, controller: _chairsController, colorScheme: colorScheme),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: createRoom,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9C27B0),
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: colorScheme.onPrimary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     textStyle: const TextStyle(fontSize: 16),
                   ),
-                  child: const Center(
-                    child: Text("Confirm", style: TextStyle(color: Colors.white)),
-                  ),
+                  child: const Center(child: Text("Confirm")),
                 ),
               ],
             ),
@@ -157,7 +160,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
   }
 
   Widget _buildLabeledInput(String label, String hint,
-      {TextInputType inputType = TextInputType.text, required TextEditingController controller}) {
+      {TextInputType inputType = TextInputType.text, required TextEditingController controller, required ColorScheme colorScheme}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

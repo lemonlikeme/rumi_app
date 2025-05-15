@@ -92,8 +92,10 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -107,28 +109,28 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
                     onPressed: () => Navigator.pop(context, {widget.userData, widget.roomId}),
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(const Color(0xFF9C27B0)),
+                      backgroundColor: WidgetStateProperty.all(colorScheme.primary),
                     ),
                   ),
                   const SizedBox(width: 10),
-                  const Text(
+                  Text(
                     "Create a Schedule",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF6A4C9C),
+                      color: colorScheme.primary,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
 
-              const Text(
+              Text(
                 "Time",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF6A4C9C),
+                  color: colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -159,28 +161,31 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
               ),
 
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 "Day",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF6A4C9C),
+                  color: colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 8),
 
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFF6A4C9C)),
+                  border: Border.all(color: colorScheme.primary),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: "Select a day",
+                    hintStyle: TextStyle(color: colorScheme.primary),
                     border: InputBorder.none,
+
                   ),
                   value: _selectedDay,
+                  dropdownColor: Theme.of(context).cardColor,
                   items: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
                       .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                       .toList(),
@@ -193,20 +198,20 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
               ),
 
               const SizedBox(height: 16),
-              _buildLabeledInput("Professor", "Professor Name", _professorController),
-              _buildLabeledInput("Course", "Enter the course name", _courseController),
-              _buildLabeledInput("Section", "Enter section here", _sectionController),
-              _buildLabeledInput("Subject", "Enter subject name", _subjectController),
+              _buildLabeledInput("Professor", "Professor Name", _professorController, colorScheme),
+              _buildLabeledInput("Course", "Enter the course name", _courseController, colorScheme),
+              _buildLabeledInput("Section", "Enter section here", _sectionController, colorScheme),
+              _buildLabeledInput("Subject", "Enter subject name", _subjectController, colorScheme),
 
               const SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
                   onPressed: _confirmSchedule,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9C27B0),
+                    backgroundColor: colorScheme.primary,
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
-                  child: const Text("Confirm", style: TextStyle(fontSize: 16, color: Colors.white)),
+                  child: Text("Confirm", style: TextStyle(fontSize: 16, color: colorScheme.onPrimary)),
                 ),
               ),
               const SizedBox(height: 32),
@@ -218,6 +223,7 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
   }
 
   Widget _buildReadOnlyInput(BuildContext context, String hint, String value) {
+    final colorScheme = Theme.of(context).colorScheme;
     return TextField(
       readOnly: true,
       textAlign: TextAlign.center,
@@ -226,33 +232,34 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
         hintText: hint,
         contentPadding: const EdgeInsets.all(14),
         border: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xFF6A4C9C)),
+          borderSide: BorderSide(color: colorScheme.primary),
           borderRadius: BorderRadius.circular(8),
         ),
       ),
     );
   }
 
-  Widget _buildLabeledInput(String label, String hint, TextEditingController controller) {
+  Widget _buildLabeledInput(String label, String hint, TextEditingController controller, ColorScheme colorScheme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF6A4C9C),
+            color: colorScheme.primary,
           ),
         ),
         const SizedBox(height: 8),
         TextField(
+          controller: controller,
           decoration: InputDecoration(
             hintText: hint,
             contentPadding: const EdgeInsets.all(14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF6A4C9C)),
+              borderSide: BorderSide(color: colorScheme.primary),
             ),
           ),
         ),
