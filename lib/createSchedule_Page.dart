@@ -201,12 +201,7 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
               const SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context, {
-                      'userData': widget.userData,
-                      'roomId': widget.roomId,
-                    });
-                  },
+                  onPressed: _confirmSchedule,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF9C27B0),
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
