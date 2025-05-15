@@ -1,26 +1,56 @@
 import 'package:flutter/material.dart';
 
-class CreateSchedulePage extends StatelessWidget {
-
+class CreateSchedulePage extends StatefulWidget {
   final Map<String, dynamic> userData;
   const CreateSchedulePage({super.key, required this.userData});
 
   @override
+  State<CreateSchedulePage> createState() => _CreateSchedulePageState();
+}
+
+class _CreateSchedulePageState extends State<CreateSchedulePage> {
+  TimeOfDay? _startTime;
+  TimeOfDay? _endTime;
+
+  Future<void> _selectTime(BuildContext context, bool isStart) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: isStart ? (_startTime ?? TimeOfDay.now()) : (_endTime ?? TimeOfDay.now()),
+    );
+    if (picked != null) {
+      setState(() {
+        if (isStart) {
+          _startTime = picked;
+        } else {
+          _endTime = picked;
+        }
+      });
+    }
+  }
+
+  String _formatTime(TimeOfDay? time) {
+    if (time == null) return "";
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    return TimeOfDay.fromDateTime(dt).format(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF), // Replace with bluish color equivalent
+      backgroundColor: const Color(0xFFFFFFFF),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Row with Back Button and Title
+              // Header Row
               Row(
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context, userData),
+                    onPressed: () => Navigator.pop(context, widget.userData),
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(const Color(0xFF9C27B0)),
                     ),
@@ -31,14 +61,13 @@ class CreateSchedulePage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF6A4C9C), // lavender_purple
+                      color: Color(0xFF6A4C9C),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
 
-              // Time Text
               const Text(
                 "Time",
                 style: TextStyle(
@@ -49,18 +78,27 @@ class CreateSchedulePage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
 
-              // Time Row
               Row(
                 children: [
                   Expanded(
-                    child: _buildReadOnlyInput(context, "Start Time"),
+                    child: GestureDetector(
+                      onTap: () => _selectTime(context, true),
+                      child: AbsorbPointer(
+                        child: _buildReadOnlyInput(context, "Start Time", _formatTime(_startTime)),
+                      ),
+                    ),
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: Text("to"),
                   ),
                   Expanded(
-                    child: _buildReadOnlyInput(context, "End Time"),
+                    child: GestureDetector(
+                      onTap: () => _selectTime(context, false),
+                      child: AbsorbPointer(
+                        child: _buildReadOnlyInput(context, "End Time", _formatTime(_endTime)),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -76,7 +114,6 @@ class CreateSchedulePage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
 
-              // Dropdown
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: const Color(0xFF6A4C9C)),
@@ -88,7 +125,7 @@ class CreateSchedulePage extends StatelessWidget {
                     hintText: "Select a day",
                     border: InputBorder.none,
                   ),
-                  items: ['Saturday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+                  items: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
                       .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                       .toList(),
                   onChanged: (value) {},
@@ -120,10 +157,11 @@ class CreateSchedulePage extends StatelessWidget {
     );
   }
 
-  Widget _buildReadOnlyInput(BuildContext context, String hint) {
+  Widget _buildReadOnlyInput(BuildContext context, String hint, String value) {
     return TextField(
       readOnly: true,
       textAlign: TextAlign.center,
+      controller: TextEditingController(text: value),
       decoration: InputDecoration(
         hintText: hint,
         contentPadding: const EdgeInsets.all(14),

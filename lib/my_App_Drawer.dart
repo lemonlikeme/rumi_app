@@ -16,13 +16,49 @@ class MyAppDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(color: Color(0xFF9C27B0)),
-            child: Text(
-              '${userData['fullName'] ?? 'User'}!',
-              style: TextStyle(color: Colors.white, fontSize: 24),
+          SizedBox(
+            height: 300,
+            child: DrawerHeader(
+              decoration: const BoxDecoration(color: Color(0xFF9C27B0)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Profile Icon (aligned left)
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Color(0xFF9C27B0),
+                        width: 5,
+                      ),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: const Icon(
+                      Icons.account_circle,
+                      size: 120,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Full Name
+                  Text(
+                    '${userData['fullName'] ?? 'User'}!',
+                    style: const TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                  const SizedBox(height: 4),
+                  // Profession
+                  Text(
+                    '${userData['profession'] ?? 'Profession'}',
+                    style: const TextStyle(color: Colors.white70, fontSize: 16),
+                  ),
+                ],
+              ),
             ),
           ),
+
+
+
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),

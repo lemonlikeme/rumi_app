@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:rumi_roomapp/createRoom_Page.dart';
+import 'package:rumi_roomapp/createSchedule_Page.dart';
 
 import 'my_App_Bar.dart';
 import 'my_App_Drawer.dart';
@@ -342,7 +344,13 @@ class _RoomPageState extends State<RoomPage> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _pickRoomImage,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreateSchedulePage(userData: {},
+              )),
+            );
+          },
           backgroundColor: const Color(0xFF9C27B0),
           child: const Icon(Icons.add, color: Colors.white),
         ),
