@@ -373,7 +373,9 @@ class _RoomPageState extends State<RoomPage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CreateSchedulePage(userData: {},
+              MaterialPageRoute(builder: (context) => CreateSchedulePage(
+                userData: widget.userData,
+                roomId: widget.roomId,
               )),
             );
           },

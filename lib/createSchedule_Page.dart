@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CreateSchedulePage extends StatefulWidget {
   final Map<String, dynamic> userData;
-  const CreateSchedulePage({super.key, required this.userData});
+  final String roomId;
+  const CreateSchedulePage({super.key, required this.userData, required this.roomId});
 
   @override
   State<CreateSchedulePage> createState() => _CreateSchedulePageState();
@@ -11,6 +13,13 @@ class CreateSchedulePage extends StatefulWidget {
 class _CreateSchedulePageState extends State<CreateSchedulePage> {
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
+
+  String? _selectedDay;
+
+  final TextEditingController _professorController = TextEditingController();
+  final TextEditingController _courseController = TextEditingController();
+  final TextEditingController _sectionController = TextEditingController();
+  final TextEditingController _subjectController = TextEditingController();
 
   Future<void> _selectTime(BuildContext context, bool isStart) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -36,6 +45,52 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
   }
 
   @override
+  void dispose() {
+    _professorController.dispose();
+    _courseController.dispose();
+    _sectionController.dispose();
+    _subjectController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _confirmSchedule() async {
+    if (_startTime == null || _endTime == null || _selectedDay == null ||
+        _professorController.text.isEmpty || _courseController.text.isEmpty ||
+        _sectionController.text.isEmpty || _subjectController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please complete all fields."))
+      );
+      return;
+    }
+
+    final startTimeFormatted = _startTime!.format(context);
+    final endTimeFormatted = _endTime!.format(context);
+
+    try {
+      await FirebaseFirestore.instance.collection('schedules').add({
+        'educator': _professorController.text,
+        'course': _courseController.text,
+        'section': _sectionController.text,
+        'subject': _subjectController.text,
+        'days': _selectedDay,
+        'startTime': startTimeFormatted,
+        'endTime': endTimeFormatted,
+        'roomIds': [widget.roomId],
+      });
+
+      Navigator.pop(context, {
+        'userData': widget.userData,
+        'roomId': widget.roomId,
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error saving schedule: $e"))
+      );
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
@@ -50,7 +105,7 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context, widget.userData),
+                    onPressed: () => Navigator.pop(context, {widget.userData, widget.roomId}),
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(const Color(0xFF9C27B0)),
                     ),
@@ -125,23 +180,33 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
                     hintText: "Select a day",
                     border: InputBorder.none,
                   ),
+                  value: _selectedDay,
                   items: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
                       .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                       .toList(),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedDay = value;
+                    });
+                  },
                 ),
               ),
 
               const SizedBox(height: 16),
-              _buildLabeledInput("Professor", "Professor Name"),
-              _buildLabeledInput("Course", "Enter the course name"),
-              _buildLabeledInput("Section", "Enter section here"),
-              _buildLabeledInput("Subject", "Enter subject name"),
+              _buildLabeledInput("Professor", "Professor Name", _professorController),
+              _buildLabeledInput("Course", "Enter the course name", _courseController),
+              _buildLabeledInput("Section", "Enter section here", _sectionController),
+              _buildLabeledInput("Subject", "Enter subject name", _subjectController),
 
               const SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context, {
+                      'userData': widget.userData,
+                      'roomId': widget.roomId,
+                    });
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF9C27B0),
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -173,7 +238,7 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
     );
   }
 
-  Widget _buildLabeledInput(String label, String hint) {
+  Widget _buildLabeledInput(String label, String hint, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
