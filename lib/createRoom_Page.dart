@@ -45,20 +45,28 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
     final uid = widget.userData['id'];
     final photo = widget.userData['photoUrl'] ?? ''; // Optional fallback
 
+    final roomData = {
+      'access': false,
+      'building': building,
+      'place': place,
+      'room': room,
+      'chairs': chairs,
+      'createdBy': uid,
+      'roomCode': roomCode,
+      'roomPhoto': photo,
+      'schedulesIds': [],
+      'userIds': <String>[],
+      'groupIds': <String>[],
+    };
+
+    if (widget.categoryId == null) {
+      roomData['userIds'].add(uid);
+    } else {
+      roomData['groupIds'].add(widget.categoryId);
+    }
+
     try {
-      await FirebaseFirestore.instance.collection('rooms').add({
-        'access': false,
-        'building': building,
-        'place': place,
-        'room': room,
-        'chairs': chairs,
-        'createdBy': uid,
-        'roomCode': roomCode,
-        'roomPhoto': photo,
-        'schedulesIds': [],
-        'userIds': [uid],
-        'groupIds': [],
-      });
+      await FirebaseFirestore.instance.collection('rooms').add(roomData);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Room created successfully!')),
