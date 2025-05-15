@@ -4,7 +4,13 @@ import 'dart:math';
 
 class CreateRoomPage extends StatefulWidget {
   final Map<String, dynamic> userData;
-  const CreateRoomPage({super.key, required this.userData});
+  final String? categoryId;
+  const CreateRoomPage({
+    super.key,
+    required this.userData,
+    this.categoryId,
+  });
+
 
   @override
   State<CreateRoomPage> createState() => _CreateRoomPageState();
@@ -58,7 +64,18 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
         const SnackBar(content: Text('Room created successfully!')),
       );
 
-      Navigator.pushReplacementNamed(context, '/main', arguments: widget.userData);
+      if (widget.categoryId == null) {
+        Navigator.pushReplacementNamed(context, '/main', arguments: widget.userData);
+      } else {
+        Navigator.pushReplacementNamed(
+          context,
+          '/category',
+          arguments: {
+            'userData': widget.userData,
+            'categoryId': widget.categoryId,
+          },
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
@@ -81,7 +98,16 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context, widget.userData),
+                      onPressed: () {
+                        if (widget.categoryId == null) {
+                          Navigator.pushReplacementNamed(context, '/main', arguments: widget.userData);
+                        } else {
+                          Navigator.pushReplacementNamed(context, '/category', arguments: {
+                            'userData': widget.userData,
+                            'categoryId': widget.categoryId,
+                          });
+                        }
+                      },
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all(const Color(0xFF9C27B0)),
                       ),

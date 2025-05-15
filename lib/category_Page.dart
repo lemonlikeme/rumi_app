@@ -7,6 +7,7 @@ import 'my_App_Bar.dart';
 import 'my_App_Drawer.dart';
 
 class CategoryPage extends StatelessWidget {
+
   final Map<String, dynamic> userData;
   final String categoryId;
   const CategoryPage({
@@ -60,7 +61,10 @@ class CategoryPage extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateRoomPage(userData: userData)),
+            MaterialPageRoute(builder: (context) => CreateRoomPage(
+                userData: userData,
+                categoryId: categoryId,
+            )),
           );
         },
         backgroundColor: const Color(0xFF9C27B0),
