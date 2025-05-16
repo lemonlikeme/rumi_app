@@ -29,8 +29,11 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
     String placeName = _placeController.text.trim();
     String buildingName = _buildingController.text.trim();
     String groupCode = generateGroupCode(); // generate random code
-    List<String> roomIds = []; // Placeholder for room IDs, should be handled later
-    List<String> userIds = [widget.userData['id']]; // Placeholder for user IDs, should be handled later
+    List<String> roomIds = [
+    ]; // Placeholder for room IDs, should be handled later
+    List<String> userIds = [
+      widget.userData['id']
+    ]; // Placeholder for user IDs, should be handled later
 
     // Check if all fields are filled
     if (categoryName.isEmpty || placeName.isEmpty || buildingName.isEmpty) {
@@ -57,7 +60,8 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
       );
 
       // You can navigate back or perform any other action after saving
-      Navigator.pushReplacementNamed(context, '/main', arguments: widget.userData);
+      Navigator.pushReplacementNamed(
+          context, '/main', arguments: widget.userData);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
@@ -67,8 +71,11 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFE6E6FA), // Lavender background
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0).copyWith(top: 10, bottom: 0),
@@ -79,133 +86,47 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF9C27B0),
+                        color: colorScheme.primary,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () => Navigator.pop(context, widget.userData),
+                        icon: Icon(
+                            Icons.arrow_back, color: colorScheme.onPrimary),
+                        onPressed: () =>
+                            Navigator.pop(context, widget.userData),
                       ),
                     ),
                     const SizedBox(width: 16),
-                    const Text(
+                    Text(
                       'Create a Category',
                       style: TextStyle(
                         fontSize: 20,
-                        color: Color(0xFF9C27B0),
+                        color: colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
-
-                // Category Name
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Category Name',
-                    style: TextStyle(
-                      color: Color(0xFF9C27B0),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _categoryController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter category name',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.all(12),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Color(0xFF9C27B0)),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Color(0xFF9C27B0), width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
+                _buildLabel('Category Name', colorScheme.primary),
+                _buildTextField(
+                    _categoryController, 'Enter category name', colorScheme),
                 const SizedBox(height: 16),
-
-                // Place Name
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Place',
-                    style: TextStyle(
-                      color: Color(0xFF9C27B0),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _placeController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter the place here',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.all(12),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Color(0xFF9C27B0)),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Color(0xFF9C27B0), width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
+                _buildLabel('Place', colorScheme.primary),
+                _buildTextField(
+                    _placeController, 'Enter the place here', colorScheme),
                 const SizedBox(height: 16),
-
-                // Building Name
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Building',
-                    style: TextStyle(
-                      color: Color(0xFF9C27B0),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _buildingController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter the building here',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.all(12),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Color(0xFF9C27B0)),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Color(0xFF9C27B0), width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
+                _buildLabel('Building', colorScheme.primary),
+                _buildTextField(_buildingController, 'Enter the building here',
+                    colorScheme),
                 const SizedBox(height: 32),
-
-                // Confirm Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: createCategory,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF9C27B0),
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
                       padding: const EdgeInsets.all(16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -213,9 +134,7 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
                       elevation: 4,
                     ),
                     child: const Text(
-                      'Confirm',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
+                        'Confirm', style: TextStyle(fontSize: 16)),
                   ),
                 ),
               ],
@@ -225,5 +144,40 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
       ),
     );
   }
-}
 
+  Widget _buildLabel(String text, Color color) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String hint,
+      ColorScheme colorScheme) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(color: Colors.grey),
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.all(12),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colorScheme.primary),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+}

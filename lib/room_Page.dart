@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:rumi_roomapp/createRoom_Page.dart';
 import 'package:rumi_roomapp/createSchedule_Page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -351,7 +350,7 @@ class _RoomPageState extends State<RoomPage> {
                     itemBuilder: (context, index) {
                       final sched = schedules[index];
                       return ScheduleCard(
-                        professor: sched['professor'] ?? '',
+                        professor: sched['educator'] ?? '',
                         subject: sched['subject'] ?? '',
                         startTime: sched['startTime'] ?? '',
                         endTime: sched['endTime'] ?? '',

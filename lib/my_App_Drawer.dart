@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rumi_roomapp/account_Page.dart';
-
 import 'main_screen.dart';
 
 class MyAppDrawer extends StatelessWidget {
@@ -10,66 +9,73 @@ class MyAppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final user = FirebaseAuth.instance.currentUser;
 
     return Drawer(
+      backgroundColor: theme.scaffoldBackgroundColor,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           SizedBox(
             height: 300,
             child: DrawerHeader(
-              decoration: const BoxDecoration(color: Color(0xFF9C27B0)),
+              decoration: BoxDecoration(color: Color(0xFF9C27B0)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Profile Icon (aligned left)
                   Container(
+                    width: 160,
+                    height: 160,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.cardColor,
                       border: Border.all(
-                        color: Color(0xFF9C27B0),
+                        color: Colors.white,
                         width: 5,
                       ),
                       borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: const Icon(
-                      Icons.account_circle,
-                      size: 120,
-                      color: Colors.grey,
+                      image: DecorationImage(
+                        image: userData['photoProfile'] != null
+                            ? NetworkImage(userData['photoProfile'])
+                            : const AssetImage('assets/baseline_person_outline_24.png')
+                        as ImageProvider,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Full Name
                   Text(
                     '${userData['fullName'] ?? 'User'}!',
-                    style: const TextStyle(color: Colors.white, fontSize: 20),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 4),
-                  // Profession
                   Text(
                     '${userData['profession'] ?? 'Profession'}',
-                    style: const TextStyle(color: Colors.white70, fontSize: 16),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white70,
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-
-
-
           ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Home'),
+            leading: Icon(Icons.home, color: theme.iconTheme.color),
+            title: Text('Home', style: theme.textTheme.bodyLarge),
             onTap: () {
-              Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false,
-              arguments: userData);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/main',
+                    (route) => false,
+                arguments: userData,
+              );
             },
           ),
           ListTile(
-            leading: const Icon(Icons.account_box),
-            title: const Text('Account'),
+            leading: Icon(Icons.account_box, color: theme.iconTheme.color),
+            title: Text('Account', style: theme.textTheme.bodyLarge),
             onTap: () {
               Navigator.push(
                 context,
@@ -80,8 +86,8 @@ class MyAppDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
+            leading: Icon(Icons.logout, color: theme.iconTheme.color),
+            title: Text('Logout', style: theme.textTheme.bodyLarge),
             onTap: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.of(context).pushAndRemoveUntil(

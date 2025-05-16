@@ -10,7 +10,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  // Text Controllers
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
@@ -18,19 +17,15 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
-  // Dropdown Selections
   String? _selectedGender;
   String? _selectedProfession;
 
-  // Password visibility toggles
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
-  // Firebase instances
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Register Method
   Future<void> _registerUser() async {
     if (_passwordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -40,19 +35,17 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     try {
-      // Create user with email and password
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // Save additional user info to Firestore
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'email': _emailController.text.trim(),
         'gender': _selectedGender ?? '',
         'fullName': _fullNameController.text.trim(),
         'phone': _phoneController.text.trim(),
-        'photoProfile': null, // default null
+        'photoProfile': null,
         'profession': _selectedProfession ?? '',
         'username': _usernameController.text.trim(),
       });
@@ -72,26 +65,28 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back Button
               Align(
                 alignment: Alignment.topLeft,
                 child: Container(
                   margin: const EdgeInsets.only(top: 10, left: 16),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.deepPurple),
+                    border: Border.all(color: colorScheme.primary),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.arrow_back),
-                    color: Colors.deepPurple,
+                    color: colorScheme.primary,
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -101,51 +96,40 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 20),
 
-              // Title
               Center(
                 child: Text(
                   'Register',
-                  style: TextStyle(
-                    fontSize: 28,
+                  style: theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF6A4C9C),
+                    color: colorScheme.primary,
                   ),
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              // Username
               _buildTextField(
                 hintText: 'Username',
                 prefixIcon: Icons.person_outline,
                 controller: _usernameController,
               ),
-
-              // Email
               _buildTextField(
                 hintText: 'Email',
                 prefixIcon: Icons.email,
                 inputType: TextInputType.emailAddress,
                 controller: _emailController,
               ),
-
-              // Full Name
               _buildTextField(
                 hintText: 'Full Name',
                 prefixIcon: Icons.drive_file_rename_outline,
                 controller: _fullNameController,
               ),
-
-              // Phone Number
               _buildTextField(
                 hintText: 'Phone Number',
                 prefixIcon: Icons.phone,
                 inputType: TextInputType.phone,
                 controller: _phoneController,
               ),
-
-              // Password
               _buildTextField(
                 hintText: 'Password',
                 prefixIcon: Icons.lock_outline,
@@ -163,8 +147,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                 ),
               ),
-
-              // Confirm Password
               _buildTextField(
                 hintText: 'Confirm Password',
                 prefixIcon: Icons.lock_outline,
@@ -185,7 +167,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 10),
 
-              // Gender and Profession Dropdowns
               Row(
                 children: [
                   Expanded(
@@ -216,13 +197,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 20),
 
-              // Register Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _registerUser,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9C27B0),
+                    backgroundColor: colorScheme.primary,
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -242,7 +222,6 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  // TextField builder
   Widget _buildTextField({
     required String hintText,
     required IconData prefixIcon,
@@ -251,10 +230,13 @@ class _RegisterPageState extends State<RegisterPage> {
     required TextEditingController controller,
     Widget? suffixIcon,
   }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.deepPurple.shade100),
+        border: Border.all(color: colorScheme.primary.withOpacity(0.3)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextField(
@@ -264,45 +246,45 @@ class _RegisterPageState extends State<RegisterPage> {
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(14),
           hintText: hintText,
-          hintStyle: TextStyle(color: Colors.deepPurple.shade200),
-          prefixIcon: Icon(prefixIcon, color: Color(0xFF6A4C9C)),
+          hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.5)),
+          prefixIcon: Icon(prefixIcon, color: colorScheme.primary),
           suffixIcon: suffixIcon,
           border: InputBorder.none,
         ),
-        style: const TextStyle(color: Color(0xFF6A4C9C)),
+        style: TextStyle(color: colorScheme.onSurface),
       ),
     );
   }
 
-  // Dropdown builder
   Widget _buildDropdownField({
     required String hintText,
     required List<String> options,
     required void Function(String?) onChanged,
   }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.deepPurple.shade100),
+        border: Border.all(color: colorScheme.primary.withOpacity(0.3)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(14),
           hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.white),
+          hintStyle: TextStyle(color: colorScheme.onPrimary.withOpacity(0.8)),
           filled: true,
-          fillColor: const Color(0xFF9C27B0),
+          fillColor: colorScheme.primary,
           border: InputBorder.none,
         ),
-        dropdownColor: const Color(0xFF9C27B0),
+        dropdownColor: colorScheme.primary,
         style: const TextStyle(color: Colors.white),
-        items: options
-            .map((option) => DropdownMenuItem(
+        items: options.map((option) => DropdownMenuItem(
           value: option,
           child: Text(option),
-        ))
-            .toList(),
+        )).toList(),
         onChanged: onChanged,
       ),
     );

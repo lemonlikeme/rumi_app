@@ -7,7 +7,6 @@ import 'my_App_Bar.dart';
 import 'my_App_Drawer.dart';
 
 class CategoryPage extends StatelessWidget {
-
   final Map<String, dynamic> userData;
   final String categoryId;
   const CategoryPage({
@@ -18,14 +17,13 @@ class CategoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final String categoryName = ModalRoute.of(context)!.settings.arguments as String? ?? 'Category';
-
+    final theme = Theme.of(context);
 
     return Scaffold(
       drawer: MyAppDrawer(userData: userData),
       appBar: MyAppBar(
         title: categoryId,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: theme.colorScheme.onPrimary),
         actions: [
           PopupMenuButton<int>(
             onSelected: (int value) {
@@ -33,26 +31,34 @@ class CategoryPage extends StatelessWidget {
                 _showFindingRoom(context);
               } else if (value == 2) {
                 _showDeleteOption(context);
-              } else if (value == 3 ) {
+              } else if (value == 3) {
                 // Copy the Category Code
               }
             },
-            itemBuilder: (BuildContext context) => const [
-              PopupMenuItem<int>(value: 1, child: Text('Find Room')),
-              PopupMenuItem<int>(value: 2, child: Text('Delete Room')),
-              PopupMenuItem<int>(value: 3, child: Text('Copy Category Code'))
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem<int>(
+                value: 1,
+                child: Text('Find Room', style: TextStyle(color: theme.colorScheme.primary)),
+              ),
+              PopupMenuItem<int>(
+                value: 2,
+                child: Text('Delete Room', style: TextStyle(color: theme.colorScheme.primary)),
+              ),
+              PopupMenuItem<int>(
+                value: 3,
+                child: Text('Copy Category Code', style: TextStyle(color: theme.colorScheme.primary)),
+              ),
             ],
           ),
         ],
       ),
-
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              _buildTitleRow('Rooms'),
-              _buildRoomRecyclerView(),
+              _buildTitleRow('Rooms', theme),
+              _buildRoomRecyclerView(theme),
             ],
           ),
         ),
@@ -61,42 +67,44 @@ class CategoryPage extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateRoomPage(
+            MaterialPageRoute(
+              builder: (context) => CreateRoomPage(
                 userData: userData,
                 categoryId: categoryId,
-            )),
+              ),
+            ),
           );
         },
-        backgroundColor: const Color(0xFF9C27B0),
-        child: const Icon(Icons.add, color: Colors.white),
+        backgroundColor: Color(0xFF9C27B0),
+
+      child: Icon(Icons.add, color: theme.colorScheme.onPrimary),
       ),
     );
   }
 
-  Widget _buildTitleRow(String title) {
-    // Category
+  Widget _buildTitleRow(String title, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: Divider(
-              color: Color(0xFF9C27B0),
+              color: theme.colorScheme.primary,
               thickness: 1,
               endIndent: 8,
             ),
           ),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
-              color: Color(0xFF9C27B0),
+              color: theme.colorScheme.primary,
               fontFamily: 'sans-serif-medium',
             ),
           ),
-          const Expanded(
+          Expanded(
             child: Divider(
-              color: Color(0xFF9C27B0),
+              color: theme.colorScheme.primary,
               thickness: 1,
               indent: 8,
             ),
@@ -106,16 +114,16 @@ class CategoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRoomRecyclerView() {
+  Widget _buildRoomRecyclerView(ThemeData theme) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('rooms').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator(color: theme.colorScheme.primary));
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('No rooms available.'));
+          return Center(child: Text('No rooms available.', style: TextStyle(color: theme.colorScheme.primary)));
         }
 
         final filteredRooms = snapshot.data!.docs.where((doc) {
@@ -124,7 +132,7 @@ class CategoryPage extends StatelessWidget {
         }).toList();
 
         if (filteredRooms.isEmpty) {
-          return const Center(child: Text('No rooms in this category.'));
+          return Center(child: Text('No rooms in this category.', style: TextStyle(color: theme.colorScheme.primary)));
         }
 
         return ListView.builder(
@@ -144,14 +152,13 @@ class CategoryPage extends StatelessWidget {
               ),
               child: InkWell(
                 onTap: () {
-
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => RoomPage(
-                          userData: userData,
-                          roomId: roomId,
-                          categoryId: categoryId,
+                        userData: userData,
+                        roomId: roomId,
+                        categoryId: categoryId,
                       ),
                       settings: RouteSettings(arguments: roomData['name']),
                     ),
@@ -159,12 +166,13 @@ class CategoryPage extends StatelessWidget {
                 },
                 child: Container(
                   padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
+                  decoration: BoxDecoration(
+                    image: const DecorationImage(
                       image: AssetImage('assets/images/stripes_fade.png'),
                       fit: BoxFit.cover,
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    borderRadius: const BorderRadius.all(Radius.circular(24)),
+                    color: const Color(0xFF9C27B0),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,10 +183,10 @@ class CategoryPage extends StatelessWidget {
                         children: [
                           Text(
                             roomData['room'] ?? 'Room Name',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFFEFEFEF),
+                              color: Colors.white,
                             ),
                           ),
                           Container(
@@ -189,10 +197,7 @@ class CategoryPage extends StatelessWidget {
                             ),
                             child: const Text(
                               'Room',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(fontSize: 12, color: Colors.black),
                             ),
                           ),
                         ],
@@ -205,9 +210,9 @@ class CategoryPage extends StatelessWidget {
                             flex: 2,
                             child: Text(
                               roomData['place'] ?? 'Place',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
-                                color: Color(0xFFEFEFEF),
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -215,9 +220,9 @@ class CategoryPage extends StatelessWidget {
                             flex: 2,
                             child: Text(
                               roomData['building'] ?? 'Building',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
-                                color: Color(0xFFEFEFEF),
+                                color: Colors.white,
                               ),
                               textAlign: TextAlign.right,
                             ),
@@ -229,9 +234,9 @@ class CategoryPage extends StatelessWidget {
                         alignment: Alignment.bottomRight,
                         child: Text(
                           'Chairs: ${roomData['chairs'] ?? 'N/A'}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
-                            color: Color(0xFFEFEFEF),
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -246,14 +251,15 @@ class CategoryPage extends StatelessWidget {
     );
   }
 
-
   void _showFindingRoom(BuildContext context) {
+    final theme = Theme.of(context);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: const EdgeInsets.all(20),
-          backgroundColor: Colors.white,
+          backgroundColor: theme.colorScheme.surface,
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -262,26 +268,26 @@ class CategoryPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Find Category and Room',
                       style: TextStyle(
-                        color: Color(0xFF9C27B0),
+                        color: theme.colorScheme.primary,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close),
+                      icon: Icon(Icons.close),
                       onPressed: () => Navigator.pop(context),
-                      color: const Color(0xFF9C27B0),
+                      color: theme.colorScheme.primary,
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   "You're currently signed in as:",
                   style: TextStyle(
-                    color: Color(0xFF9C27B0),
+                    color: theme.colorScheme.primary,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -289,11 +295,14 @@ class CategoryPage extends StatelessWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 24,
-                      backgroundColor: Color(0xFF9C27B0),
+                      backgroundColor: theme.colorScheme.primary,
                       child: Icon(
-                          Icons.person_outline, size: 40, color: Colors.white),
+                        Icons.person_outline,
+                        size: 40,
+                        color: theme.colorScheme.onPrimary,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Column(
@@ -301,16 +310,16 @@ class CategoryPage extends StatelessWidget {
                       children: [
                         Text(
                           userData['username'] ?? 'Full Name',
-                          style: const TextStyle(
-                            color: Color(0xFF9C27B0),
+                          style: TextStyle(
+                            color: theme.colorScheme.primary,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           userData['profession'] ?? 'Profession',
-                          style: const TextStyle(
-                            color: Color(0xFF9C27B0),
+                          style: TextStyle(
+                            color: theme.colorScheme.onPrimary.withOpacity(0.7),
                             fontSize: 14,
                           ),
                         ),
@@ -319,10 +328,10 @@ class CategoryPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Enter the code:',
                   style: TextStyle(
-                    color: Color(0xFF9C27B0),
+                    color: theme.colorScheme.onPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -331,12 +340,14 @@ class CategoryPage extends StatelessWidget {
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'Room/Category Code',
+                    hintStyle: TextStyle(color: theme.colorScheme.onPrimary.withOpacity(0.5)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFF9C27B0)),
+                      borderSide: BorderSide(color: theme.colorScheme.primary),
                     ),
                     contentPadding: const EdgeInsets.all(16),
                   ),
+                  style: TextStyle(color: theme.colorScheme.primary),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
@@ -345,13 +356,13 @@ class CategoryPage extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9C27B0),
+                    backgroundColor: theme.colorScheme.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     minimumSize: const Size(double.infinity, 0),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Confirm',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(color: theme.colorScheme.onPrimary, fontSize: 16),
                   ),
                 ),
               ],
@@ -362,16 +373,15 @@ class CategoryPage extends StatelessWidget {
     );
   }
 
-
-
-
   void _showDeleteOption(BuildContext context) {
+    final theme = Theme.of(context);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: const EdgeInsets.all(20),
-          backgroundColor: Colors.white,
+          backgroundColor: theme.colorScheme.surface,
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -380,26 +390,26 @@ class CategoryPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Delete Category or Room',
                       style: TextStyle(
-                        color: Color(0xFF9C27B0),
+                        color: theme.colorScheme.primary,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close),
+                      icon: Icon(Icons.close),
                       onPressed: () => Navigator.pop(context),
-                      color: const Color(0xFF9C27B0),
+                      color: theme.colorScheme.primary,
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   "You're currently signed in as:",
                   style: TextStyle(
-                    color: Color(0xFF9C27B0),
+                    color: theme.colorScheme.onPrimary,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -407,11 +417,14 @@ class CategoryPage extends StatelessWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 24,
-                      backgroundColor: Color(0xFF9C27B0),
+                      backgroundColor: theme.colorScheme.primary,
                       child: Icon(
-                          Icons.person_outline, size: 40, color: Colors.white),
+                        Icons.person_outline,
+                        size: 40,
+                        color: theme.colorScheme.onPrimary,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Column(
@@ -419,16 +432,16 @@ class CategoryPage extends StatelessWidget {
                       children: [
                         Text(
                           userData['username'] ?? 'Full Name',
-                          style: const TextStyle(
-                            color: Color(0xFF9C27B0),
+                          style: TextStyle(
+                            color: theme.colorScheme.onPrimary,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           userData['profession'] ?? 'Profession',
-                          style: const TextStyle(
-                            color: Color(0xFF9C27B0),
+                          style: TextStyle(
+                            color: theme.colorScheme.onPrimary.withOpacity(0.7),
                             fontSize: 14,
                           ),
                         ),
@@ -437,10 +450,10 @@ class CategoryPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Enter the code:',
                   style: TextStyle(
-                    color: Color(0xFF9C27B0),
+                    color: theme.colorScheme.onPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -449,11 +462,14 @@ class CategoryPage extends StatelessWidget {
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'Room/Category Code',
+                    hintStyle: TextStyle(color: theme.colorScheme.primary.withOpacity(0.5)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFF9C27B0)),
+                      borderSide: BorderSide(color: theme.colorScheme.primary),
                     ),
                     contentPadding: const EdgeInsets.all(16),
+                  ),
+                  style: TextStyle(color: theme.colorScheme.primary
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -463,13 +479,13 @@ class CategoryPage extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9C27B0),
+                    backgroundColor: theme.colorScheme.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     minimumSize: const Size(double.infinity, 0),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Confirm',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(color: theme.colorScheme.onPrimary, fontSize: 16),
                   ),
                 ),
               ],
@@ -480,4 +496,3 @@ class CategoryPage extends StatelessWidget {
     );
   }
 }
-

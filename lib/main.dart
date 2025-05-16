@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'account_Page.dart';
+import ' theme/theme.dart';
 import 'category_Page.dart';
 import 'main_Page.dart';
 import 'main_screen.dart';
@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Converted App',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
+      theme: lightMode,
+      darkTheme: darkMode,
+      themeMode: ThemeMode.system,
       // This is where you should define your routes:
       initialRoute: '/login',
       routes: {

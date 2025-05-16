@@ -34,9 +34,7 @@ class _AccountPageState extends State<AccountPage> {
       });
       final url = await _uploadToCloudinary(_profileImage!);
       if (url != null) {
-
         await _savePhotoUrlToFirestore(url);
-
         setState(() {
           _cloudinaryUrl = url;
         });
@@ -82,8 +80,10 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFE6E6FA),
+      backgroundColor: theme.colorScheme.surface,
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -99,8 +99,8 @@ class _AccountPageState extends State<AccountPage> {
                       height: 150,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.deepPurple, width: 4),
-                        color: Colors.white,
+                        border: Border.all(color: Color(0xFF9C27B0), width: 4),
+                        color: theme.cardColor,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black26,
@@ -111,7 +111,8 @@ class _AccountPageState extends State<AccountPage> {
                         image: DecorationImage(
                           image: _cloudinaryUrl != null
                               ? NetworkImage(_cloudinaryUrl!)
-                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
+                              : const AssetImage('assets/baseline_person_outline_24.png')
+                          as ImageProvider,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -120,7 +121,7 @@ class _AccountPageState extends State<AccountPage> {
                       bottom: 0,
                       right: 0,
                       child: Material(
-                        color: Colors.deepPurple,
+                        color: Color(0xFF9C27B0),
                         shape: const CircleBorder(),
                         elevation: 4,
                         child: IconButton(
@@ -174,7 +175,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               const SizedBox(height: 20),
               FloatingActionButton(
-                backgroundColor: Colors.deepPurple,
+                backgroundColor: Color(0xFF9C27B0),
                 onPressed: () => Navigator.pop(context, widget.userData),
                 child: const Icon(Icons.arrow_back, color: Colors.white),
               ),
@@ -202,11 +203,10 @@ class _AccountPageState extends State<AccountPage> {
               icon: icon,
             ),
           ),
-          if (showEditButton)
-            const SizedBox(width: 8),
+          if (showEditButton) const SizedBox(width: 8),
           if (showEditButton)
             Material(
-              color: Colors.deepPurple,
+              color: Color(0xFF9C27B0),
               shape: const CircleBorder(),
               elevation: 4,
               child: IconButton(
@@ -220,24 +220,22 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget _buildSimpleInfoBox({required String hint, required IconData icon}) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.deepPurple, width: 2),
+        color: theme.cardColor,
+        border: Border.all(color: Color(0xFF9C27B0), width: 2),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.deepPurple),
+          Icon(icon, color: Color(0xFF9C27B0)),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               hint,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-              ),
+              style: theme.textTheme.bodyLarge,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -251,41 +249,17 @@ class _AccountPageState extends State<AccountPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final theme = Theme.of(context);
         return AlertDialog(
           contentPadding: const EdgeInsets.all(20),
-          backgroundColor: Colors.white,
+          backgroundColor: theme.colorScheme.surface,
           content: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Rename Full Name',
-                      style: TextStyle(
-                        color: Color(0xFFB39DDB),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                      color: const Color(0xFFB39DDB),
-                    ),
-                  ],
-                ),
+                _buildDialogHeader('Rename Full Name', context),
                 const SizedBox(height: 20),
-                const Text(
-                  'Enter New Full Name:',
-                  style: TextStyle(
-                    color: Color(0xFFB39DDB),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                const Text('Enter New Full Name:'),
                 const SizedBox(height: 10),
                 TextField(
                   controller: controller,
@@ -313,21 +287,17 @@ class _AccountPageState extends State<AccountPage> {
                       });
 
                       Navigator.pop(context);
-
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Full name updated successfully!')),
                       );
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB39DDB),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    backgroundColor: Color(0xFF9C27B0),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     minimumSize: const Size(double.infinity, 0),
                   ),
-                  child: const Text(
-                    'Confirm',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
+                  child: const Text('Confirm', style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -341,37 +311,21 @@ class _AccountPageState extends State<AccountPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final theme = Theme.of(context);
         return AlertDialog(
           contentPadding: const EdgeInsets.all(20),
-          backgroundColor: Colors.white,
+          backgroundColor: theme.colorScheme.surface,
           content: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Reset Password',
-                      style: TextStyle(
-                        color: Color(0xFFB39DDB),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                      color: const Color(0xFFB39DDB),
-                    ),
-                  ],
-                ),
+                _buildDialogHeader('Reset Password', context),
                 const SizedBox(height: 20),
                 ...['Old Password', 'New Password', 'Confirm Password'].map((hint) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: TextField(
+                      obscureText: true,
                       decoration: InputDecoration(
                         hintText: hint,
                         border: OutlineInputBorder(
@@ -383,24 +337,33 @@ class _AccountPageState extends State<AccountPage> {
                   );
                 }).toList(),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB39DDB),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    backgroundColor: Color(0xFF9C27B0),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     minimumSize: const Size(double.infinity, 0),
                   ),
-                  child: const Text(
-                    'Confirm',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
+                  child: const Text('Confirm', style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildDialogHeader(String title, BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: Theme.of(context).textTheme.titleLarge),
+        IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.pop(context),
+          color: Colors.deepPurple,
+        ),
+      ],
     );
   }
 }
