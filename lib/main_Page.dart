@@ -153,6 +153,7 @@ class _MainPageState extends State<MainPage> {
                         builder: (context) => CategoryPage(
                           userData: widget.userData,
                           categoryId: docs[index].id,
+                          groupCode: data['groupCode'] ?? '',
                         ),
                       ),
                     );

@@ -5,10 +5,12 @@ import 'dart:math';
 class CreateRoomPage extends StatefulWidget {
   final Map<String, dynamic> userData;
   final String? categoryId;
+  final String? groupCode;
   const CreateRoomPage({
     super.key,
     required this.userData,
     this.categoryId,
+    this.groupCode,
   });
 
 
@@ -117,6 +119,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
                           Navigator.pushReplacementNamed(context, '/category', arguments: {
                             'userData': widget.userData,
                             'categoryId': widget.categoryId,
+                            'groupCode': widget.groupCode,
                           });
                         }
                       },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rumi_roomapp/createRoom_Page.dart';
 import 'package:rumi_roomapp/room_Page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 import 'my_App_Bar.dart';
 import 'my_App_Drawer.dart';
@@ -9,10 +10,12 @@ import 'my_App_Drawer.dart';
 class CategoryPage extends StatelessWidget {
   final Map<String, dynamic> userData;
   final String categoryId;
+  final String groupCode;
   const CategoryPage({
     super.key,
     required this.userData,
     required this.categoryId,
+    required this.groupCode
   });
 
   @override
@@ -32,7 +35,16 @@ class CategoryPage extends StatelessWidget {
               } else if (value == 2) {
                 _showDeleteOption(context);
               } else if (value == 3) {
-                // Copy the Category Code
+                if (groupCode != null && groupCode!.isNotEmpty) {
+                  Clipboard.setData(ClipboardData(text: groupCode));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Category code copied to clipboard')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('No category code available')),
+                  );
+                }
               }
             },
             itemBuilder: (BuildContext context) => [
@@ -71,6 +83,7 @@ class CategoryPage extends StatelessWidget {
               builder: (context) => CreateRoomPage(
                 userData: userData,
                 categoryId: categoryId,
+                groupCode: groupCode,
               ),
             ),
           );
