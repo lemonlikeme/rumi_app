@@ -13,7 +13,12 @@ class RoomPage extends StatefulWidget {
   final Map<String, dynamic> userData;
   final String roomId;
   final String? categoryId;
-  const RoomPage({super.key, required this.userData, required this.roomId, this.categoryId});
+  final String roomCode;
+  final String roomPhoto;
+  const RoomPage({super.key, required this.userData,
+    required this.roomId, this.categoryId, required this.roomCode,
+    required this.roomPhoto,
+  });
 
   @override
   State<RoomPage> createState() => _RoomPageState();
@@ -30,6 +35,7 @@ class _RoomPageState extends State<RoomPage> {
   void initState() {
     super.initState();
     _fetchSchedules();
+    _roomImageUrl = widget.roomPhoto.isNotEmpty ? widget.roomPhoto : null;
   }
 
   Future<void> _pickRoomImage() async {
@@ -58,7 +64,19 @@ class _RoomPageState extends State<RoomPage> {
     if (response.statusCode == 200) {
       final respStr = await response.stream.bytesToString();
       final data = json.decode(respStr);
-      return data['secure_url'];
+      final imageUrl = data['secure_url'];
+
+      // Store to Firestore
+      await FirebaseFirestore.instance
+          .collection('rooms')
+          .doc(widget.roomId)
+          .update({'roomPhoto': imageUrl});
+
+      setState(() {
+        _roomImageUrl = imageUrl;
+      });
+
+      return imageUrl;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cloudinary upload failed')),

@@ -256,12 +256,16 @@ class _MainPageState extends State<MainPage> {
               child: InkWell(
                 onTap: () {
                   String docId = docs[index].id;
+                  String roomCode = data['roomCode'] ?? '';
+                  String roomPhoto = data['roomPhoto'] ?? '';
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => RoomPage(
                           userData: widget.userData,
                           roomId: docId,
+                          roomCode: roomCode,
+                          roomPhoto: roomPhoto,
                       ),
                       settings: RouteSettings(arguments: data['name']),
                     ),

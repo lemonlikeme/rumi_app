@@ -159,6 +159,8 @@ class CategoryPage extends StatelessWidget {
                         userData: userData,
                         roomId: roomId,
                         categoryId: categoryId,
+                        roomCode: roomData['code'] ?? '',
+                        roomPhoto: roomData['photo'] ?? '',
                       ),
                       settings: RouteSettings(arguments: roomData['name']),
                     ),
