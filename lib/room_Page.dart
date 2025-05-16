@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:rumi_roomapp/createSchedule_Page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 import 'my_App_Bar.dart';
 import 'my_App_Drawer.dart';
@@ -126,7 +127,14 @@ class _RoomPageState extends State<RoomPage> {
             PopupMenuButton<int>(
               onSelected: (int value) {
                 if (value == 1) {
-                  // Handle Get Code
+                  Clipboard.setData(ClipboardData(text: widget.roomCode));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Room code copied to clipboard: ${widget.roomCode}'),
+                      backgroundColor: Color(0xFF9C27B0),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
                 } else if (value == 2) {
                   showDialog(
                     context: context,
