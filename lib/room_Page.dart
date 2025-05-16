@@ -103,7 +103,7 @@ class _RoomPageState extends State<RoomPage> {
       child: Scaffold(
         drawer: MyAppDrawer(userData: widget.userData),
         appBar: MyAppBar(
-          title: roomName,
+          title: widget.roomId,
           iconTheme: const IconThemeData(color: Colors.white),
           actions: [
             PopupMenuButton<int>(
@@ -370,14 +370,20 @@ class _RoomPageState extends State<RoomPage> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            final result = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CreateSchedulePage(
-                userData: widget.userData,
-                roomId: widget.roomId,
-              )),
+              MaterialPageRoute(
+                builder: (context) => CreateSchedulePage(
+                  userData: widget.userData,
+                  roomId: widget.roomId,
+                ),
+              ),
             );
+
+            if (result != null && result['success'] == true) {
+              _fetchSchedules(); // Refresh schedules
+            }
           },
           backgroundColor: const Color(0xFF9C27B0),
           child: const Icon(Icons.add, color: Colors.white),

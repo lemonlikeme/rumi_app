@@ -79,6 +79,7 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
       });
 
       Navigator.pop(context, {
+        'success': true,
         'userData': widget.userData,
         'roomId': widget.roomId,
       });
@@ -247,6 +248,7 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
         ),
         const SizedBox(height: 8),
         TextField(
+          controller: controller,
           decoration: InputDecoration(
             hintText: hint,
             contentPadding: const EdgeInsets.all(14),
