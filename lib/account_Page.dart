@@ -145,7 +145,7 @@ class _AccountPageState extends State<AccountPage> {
                 showEditButton: false,
               ),
               _buildInfoRow(
-                hint: widget.userData['phoneNumber'] ?? 'Phone Number',
+                hint: widget.userData['phone'] ?? 'Phone Number',
                 icon: Icons.local_phone_outlined,
                 showEditButton: false,
               ),
