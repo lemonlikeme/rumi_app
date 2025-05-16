@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AccountPage extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -149,7 +150,7 @@ class _AccountPageState extends State<AccountPage> {
                 showEditButton: false,
               ),
               _buildInfoRow(
-                hint: 'Password',
+                hint: '••••••••',
                 icon: Icons.password,
                 onEditPressed: () => _resetPassword(context),
               ),
@@ -308,6 +309,8 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void _resetPassword(BuildContext context) {
+    final emailController = TextEditingController(text: widget.userData['email']);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -321,29 +324,51 @@ class _AccountPageState extends State<AccountPage> {
               children: [
                 _buildDialogHeader('Reset Password', context),
                 const SizedBox(height: 20),
-                ...['Enter your Email'].map((hint) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: hint,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        contentPadding: const EdgeInsets.all(16),
-                      ),
+                const Text('We will send a password reset link to your email address:'),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: emailController,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  );
-                }).toList(),
+                    contentPadding: const EdgeInsets.all(16),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
+                    onPressed: () async {
+                      final currentUser = FirebaseAuth.instance.currentUser;
+                      final email = emailController.text.trim();
+
+                      if (currentUser != null && currentUser.email == email) {
+                        try {
+                          await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Password reset email sent.')),
+                          );
+                        } catch (e) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: ${e.toString()}')),
+                          );
+                        }
+                      } else {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Email does not match current user.')),
+                        );
+                      }
+                    }
+                  ,style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF9C27B0),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     minimumSize: const Size(double.infinity, 0),
                   ),
-                  child: const Text('Confirm', style: TextStyle(color: Colors.white)),
+                  child: const Text('Send Reset Link', style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
