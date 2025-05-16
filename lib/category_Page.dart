@@ -23,7 +23,7 @@ class CategoryPage extends StatelessWidget {
       drawer: MyAppDrawer(userData: userData),
       appBar: MyAppBar(
         title: categoryId,
-        iconTheme: IconThemeData(color: theme.colorScheme.onPrimary),
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           PopupMenuButton<int>(
             onSelected: (int value) {
@@ -38,15 +38,15 @@ class CategoryPage extends StatelessWidget {
             itemBuilder: (BuildContext context) => [
               PopupMenuItem<int>(
                 value: 1,
-                child: Text('Find Room', style: TextStyle(color: theme.colorScheme.primary)),
+                child: Text('Find Room'),
               ),
               PopupMenuItem<int>(
                 value: 2,
-                child: Text('Delete Room', style: TextStyle(color: theme.colorScheme.primary)),
+                child: Text('Delete Room'),
               ),
               PopupMenuItem<int>(
                 value: 3,
-                child: Text('Copy Category Code', style: TextStyle(color: theme.colorScheme.primary)),
+                child: Text('Copy Category Code'),
               ),
             ],
           ),
@@ -455,7 +455,7 @@ class CategoryPage extends StatelessWidget {
                 Text(
                   'Enter the code:',
                   style: TextStyle(
-                    color: theme.colorScheme.onPrimary,
+                    backgroundColor: theme.colorScheme.surface,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -464,14 +464,13 @@ class CategoryPage extends StatelessWidget {
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'Room/Category Code',
-                    hintStyle: TextStyle(color: theme.colorScheme.primary.withOpacity(0.5)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: theme.colorScheme.primary),
+                      borderSide: BorderSide(color: theme.colorScheme.onSurface),
                     ),
                     contentPadding: const EdgeInsets.all(16),
                   ),
-                  style: TextStyle(color: theme.colorScheme.primary
+                  style: TextStyle(color: theme.colorScheme.onSurface
                   ),
                 ),
                 const SizedBox(height: 20),

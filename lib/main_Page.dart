@@ -10,6 +10,7 @@ import 'my_App_Drawer.dart';
 class MainPage extends StatefulWidget {
   final Map<String, dynamic> userData;
 
+
   const MainPage({super.key, required this.userData});
 
   @override
@@ -354,9 +355,10 @@ class _MainPageState extends State<MainPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final theme = Theme.of(context);
         return AlertDialog(
           contentPadding: const EdgeInsets.all(20),
-          backgroundColor: Colors.white,
+          backgroundColor: theme.colorScheme.surface,
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -376,9 +378,10 @@ class _MainPageState extends State<MainPage> {
                   controller: codeController, // <-- Connect the controller
                   decoration: InputDecoration(
                     hintText: 'Room/Category Code',
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFF9C27B0)),
+                      borderSide: BorderSide(color: Colors.deepPurple),
                     ),
                     contentPadding: const EdgeInsets.all(16),
                   ),

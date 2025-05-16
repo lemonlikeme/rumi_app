@@ -321,7 +321,7 @@ class _AccountPageState extends State<AccountPage> {
               children: [
                 _buildDialogHeader('Reset Password', context),
                 const SizedBox(height: 20),
-                ...['Old Password', 'New Password', 'Confirm Password'].map((hint) {
+                ...['Enter your Email'].map((hint) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: TextField(
@@ -354,6 +354,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget _buildDialogHeader(String title, BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -361,7 +362,7 @@ class _AccountPageState extends State<AccountPage> {
         IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.pop(context),
-          color: Colors.deepPurple,
+          color: theme.colorScheme.onSurface,
         ),
       ],
     );
