@@ -116,6 +116,7 @@ class _RoomPageState extends State<RoomPage> {
 
     for (var doc in querySnapshot.docs) {
       final schedule = doc.data();
+      schedule['schedId'] = doc.id;
       final day = schedule['days']; // e.g., "Monday"
 
       if (day != null) {
@@ -427,9 +428,7 @@ class _RoomPageState extends State<RoomPage> {
                     itemCount: schedules.length,
                     itemBuilder: (context, index) {
                       final sched = schedules[index];
-                      final schedId = sched['id'];
                       return ScheduleCard(
-                        scheduleId: schedId,
                         professor: sched['educator'] ?? '',
                         subject: sched['subject'] ?? '',
                         startTime: sched['startTime'] ?? '',
@@ -440,7 +439,7 @@ class _RoomPageState extends State<RoomPage> {
                           try {
                             await FirebaseFirestore.instance
                                 .collection('schedules')
-                                .doc(schedId)
+                                .doc(sched['schedId'])
                                 .delete();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Schedule deleted')),
@@ -492,7 +491,7 @@ class ScheduleCard extends StatelessWidget {
   final String endTime;
   final String section;
   final String course;
-  final String scheduleId;
+
   final VoidCallback onDelete;
 
   const ScheduleCard({
@@ -504,7 +503,7 @@ class ScheduleCard extends StatelessWidget {
     required this.section,
     required this.course,
     required this.onDelete,
-    required this.scheduleId,
+
   });
 
   @override
