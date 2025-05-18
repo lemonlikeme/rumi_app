@@ -33,6 +33,7 @@ class _RoomPageState extends State<RoomPage> {
   Map<String, List<Map<String, dynamic>>> _schedulesByDay = {};
   bool _isLoading = true;
   bool? _isPrivate;
+  bool get hasAccess => _isPrivate != true || widget.userData['id'] == _roomCreatorId;
 
   @override
   void initState() {
@@ -403,11 +404,13 @@ class _RoomPageState extends State<RoomPage> {
                   Positioned(
                     bottom: 16,
                     right: 32,
-                    child: FloatingActionButton.small(
+                    child: hasAccess
+                        ? FloatingActionButton.small(
                       onPressed: _pickRoomImage,
                       backgroundColor: const Color(0xFF9C27B0),
                       child: const Icon(Icons.edit, color: Colors.white),
-                    ),
+                    )
+                        : const SizedBox.shrink(),
                   ),
                 ],
               ),
