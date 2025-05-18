@@ -11,6 +11,7 @@ class CategoryPage extends StatelessWidget {
   final Map<String, dynamic> userData;
   final String categoryId;
   final String groupCode;
+
   const CategoryPage({
     super.key,
     required this.userData,
@@ -38,7 +39,8 @@ class CategoryPage extends StatelessWidget {
                 if (groupCode != null && groupCode!.isNotEmpty) {
                   Clipboard.setData(ClipboardData(text: groupCode));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Category code copied to clipboard')),
+                    SnackBar(
+                        content: Text('Category code copied to clipboard')),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -47,7 +49,8 @@ class CategoryPage extends StatelessWidget {
                 }
               }
             },
-            itemBuilder: (BuildContext context) => [
+            itemBuilder: (BuildContext context) =>
+            [
               PopupMenuItem<int>(
                 value: 1,
                 child: Text('Find Room'),
@@ -80,17 +83,18 @@ class CategoryPage extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CreateRoomPage(
-                userData: userData,
-                categoryId: categoryId,
-                groupCode: groupCode,
-              ),
+              builder: (context) =>
+                  CreateRoomPage(
+                    userData: userData,
+                    categoryId: categoryId,
+                    groupCode: groupCode,
+                  ),
             ),
           );
         },
         backgroundColor: Color(0xFF9C27B0),
 
-      child: Icon(Icons.add, color: theme.colorScheme.onPrimary),
+        child: Icon(Icons.add, color: theme.colorScheme.onPrimary),
       ),
     );
   }
@@ -132,11 +136,13 @@ class CategoryPage extends StatelessWidget {
       stream: FirebaseFirestore.instance.collection('rooms').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(color: theme.colorScheme.primary));
+          return Center(child: CircularProgressIndicator(
+              color: theme.colorScheme.primary));
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No rooms available.', style: TextStyle(color: theme.colorScheme.primary)));
+          return Center(child: Text('No rooms available.',
+              style: TextStyle(color: theme.colorScheme.primary)));
         }
 
         final filteredRooms = snapshot.data!.docs.where((doc) {
@@ -145,7 +151,8 @@ class CategoryPage extends StatelessWidget {
         }).toList();
 
         if (filteredRooms.isEmpty) {
-          return Center(child: Text('No rooms in this category.', style: TextStyle(color: theme.colorScheme.primary)));
+          return Center(child: Text('No rooms in this category.',
+              style: TextStyle(color: theme.colorScheme.primary)));
         }
 
         return ListView.builder(
@@ -168,13 +175,14 @@ class CategoryPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RoomPage(
-                        userData: userData,
-                        roomId: roomId,
-                        categoryId: categoryId,
-                        roomCode: roomData['code'] ?? '',
-                        roomPhoto: roomData['photo'] ?? '',
-                      ),
+                      builder: (context) =>
+                          RoomPage(
+                            userData: userData,
+                            roomId: roomId,
+                            categoryId: categoryId,
+                            roomCode: roomData['code'] ?? '',
+                            roomPhoto: roomData['photo'] ?? '',
+                          ),
                       settings: RouteSettings(arguments: roomData['name']),
                     ),
                   );
@@ -205,14 +213,16 @@ class CategoryPage extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Text(
                               'Room',
-                              style: TextStyle(fontSize: 12, color: Colors.black),
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.black),
                             ),
                           ),
                         ],
@@ -268,6 +278,7 @@ class CategoryPage extends StatelessWidget {
 
   void _showFindingRoom(BuildContext context) {
     final theme = Theme.of(context);
+    final TextEditingController codeController = TextEditingController();
 
     showDialog(
       context: context,
@@ -353,9 +364,11 @@ class CategoryPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 TextField(
+                  controller: codeController,
                   decoration: InputDecoration(
-                    hintText: 'Room/Category Code',
-                    hintStyle: TextStyle(color: theme.colorScheme.onPrimary.withOpacity(0.5)),
+                    hintText: 'Room Code',
+                    hintStyle: TextStyle(
+                        color: theme.colorScheme.onPrimary.withOpacity(0.5)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: theme.colorScheme.primary),
@@ -366,8 +379,45 @@ class CategoryPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    // Handle confirm action
+                  onPressed: () async {
+                    final enteredCode = codeController.text.trim();
+                    if (enteredCode.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Please enter a code')),
+                      );
+                      return;
+                    }
+
+                    final querySnapshot = await FirebaseFirestore.instance
+                        .collection('rooms')
+                        .where('code', isEqualTo: enteredCode)
+                        .get();
+
+                    if (querySnapshot.docs.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('No room found with that code')),
+                      );
+                      return;
+                    }
+
+                    final roomDoc = querySnapshot.docs.first;
+                    final groupIds = List<String>.from(
+                        roomDoc['groupIds'] ?? []);
+
+                    if (groupIds.contains(categoryId)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(
+                            'The room is already in the category')),
+                      );
+                    } else {
+                      groupIds.add(categoryId);
+                      await roomDoc.reference.update({'groupIds': groupIds});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(
+                            'Room added to category successfully')),
+                      );
+                    }
+
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -377,7 +427,8 @@ class CategoryPage extends StatelessWidget {
                   ),
                   child: Text(
                     'Confirm',
-                    style: TextStyle(color: theme.colorScheme.onPrimary, fontSize: 16),
+                    style: TextStyle(
+                        color: theme.colorScheme.onPrimary, fontSize: 16),
                   ),
                 ),
               ],
@@ -390,6 +441,7 @@ class CategoryPage extends StatelessWidget {
 
   void _showDeleteOption(BuildContext context) {
     final theme = Theme.of(context);
+    final TextEditingController codeController = TextEditingController();
 
     showDialog(
       context: context,
@@ -406,7 +458,7 @@ class CategoryPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Delete Category or Room',
+                      'Delete Room from Category',
                       style: TextStyle(
                         color: theme.colorScheme.primary,
                         fontSize: 20,
@@ -466,30 +518,66 @@ class CategoryPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Enter the code:',
+                  'Enter the room code to remove from category:',
                   style: TextStyle(
-                    backgroundColor: theme.colorScheme.surface,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextField(
+                  controller: codeController,
                   decoration: InputDecoration(
-                    hintText: 'Room/Category Code',
+                    hintText: 'Room Code',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: theme.colorScheme.onSurface),
+                      borderSide: BorderSide(color: theme.colorScheme.primary),
                     ),
                     contentPadding: const EdgeInsets.all(16),
                   ),
-                  style: TextStyle(color: theme.colorScheme.onSurface
-                  ),
+                  style: TextStyle(color: theme.colorScheme.primary),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    // Handle confirm action
+                  onPressed: () async {
+                    final enteredCode = codeController.text.trim();
+                    if (enteredCode.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Please enter a room code')),
+                      );
+                      return;
+                    }
+
+                    final querySnapshot = await FirebaseFirestore.instance
+                        .collection('rooms')
+                        .where('code', isEqualTo: enteredCode)
+                        .get();
+
+                    if (querySnapshot.docs.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('No room found with that code')),
+                      );
+                      return;
+                    }
+
+                    final roomDoc = querySnapshot.docs.first;
+                    final groupIds = List<String>.from(
+                        roomDoc['groupIds'] ?? []);
+
+                    if (groupIds.contains(categoryId)) {
+                      groupIds.remove(categoryId);
+                      await roomDoc.reference.update({'groupIds': groupIds});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(
+                            'Category removed from room successfully')),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('No room was found to delete')),
+                      );
+                    }
+
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -499,7 +587,8 @@ class CategoryPage extends StatelessWidget {
                   ),
                   child: Text(
                     'Confirm',
-                    style: TextStyle(color: theme.colorScheme.onPrimary, fontSize: 16),
+                    style: TextStyle(
+                        color: theme.colorScheme.onPrimary, fontSize: 16),
                   ),
                 ),
               ],
