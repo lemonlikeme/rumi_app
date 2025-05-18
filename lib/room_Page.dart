@@ -32,6 +32,7 @@ class _RoomPageState extends State<RoomPage> {
   File? _localRoomImage;
   Map<String, List<Map<String, dynamic>>> _schedulesByDay = {};
   bool _isLoading = true;
+  bool? _isPrivate;
 
   @override
   void initState() {
@@ -50,6 +51,7 @@ class _RoomPageState extends State<RoomPage> {
     if (doc.exists) {
       setState(() {
         _roomCreatorId = doc['createdBy'];
+        _isPrivate = doc.data()?['access'] ?? false;
       });
     }
   }
@@ -154,7 +156,7 @@ class _RoomPageState extends State<RoomPage> {
                   showDialog(
                     context: context,
                     builder: (context) {
-                      bool isPrivate = false;
+                      bool isPrivate = _isPrivate ?? false;
 
                       return StatefulBuilder(
                         builder: (context, setState) {
@@ -262,8 +264,10 @@ class _RoomPageState extends State<RoomPage> {
                                         Switch(
                                           value: isPrivate,
                                           onChanged: (value) async {
-                                            // Optimistically update the UI
-                                            setState(() => isPrivate = value);
+                                            setState(() {
+                                              isPrivate = value;
+                                              _isPrivate = value;
+                                            });
 
                                             try {
                                               await FirebaseFirestore.instance
@@ -279,8 +283,10 @@ class _RoomPageState extends State<RoomPage> {
                                                 ),
                                               );
                                             } catch (e) {
-                                              // Revert the change in UI
-                                              setState(() => isPrivate = !value);
+                                              setState(() {
+                                                isPrivate = !value;
+                                                _isPrivate = !value;
+                                              });
 
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(

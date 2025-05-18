@@ -327,7 +327,7 @@ class CategoryPage extends StatelessWidget {
                             roomId: roomId,
                             categoryId: categoryId,
                             roomCode: roomData['roomCode'] ?? '',
-                            roomPhoto: roomData['photo'] ?? '',
+                            roomPhoto: roomData['roomPhoto'] ?? '',
                           ),
                       settings: RouteSettings(arguments: roomData['name']),
                     ),
