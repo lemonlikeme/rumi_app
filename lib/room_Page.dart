@@ -443,7 +443,9 @@ class _RoomPageState extends State<RoomPage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: (_isPrivate == true && widget.userData['id'] != _roomCreatorId)
+            ? null
+            : FloatingActionButton(
           onPressed: () async {
             final result = await Navigator.push(
               context,
@@ -453,7 +455,7 @@ class _RoomPageState extends State<RoomPage> {
                   roomId: widget.roomId,
                 ),
               ),
-            );//
+            );
 
             if (result != null && result['success'] == true) {
               _fetchSchedules(); // Refresh schedules
