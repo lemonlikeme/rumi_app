@@ -27,6 +27,7 @@ class RoomPage extends StatefulWidget {
 
 class _RoomPageState extends State<RoomPage> {
 
+  String? _roomCreatorId;
   String? _roomImageUrl;
   File? _localRoomImage;
   Map<String, List<Map<String, dynamic>>> _schedulesByDay = {};
@@ -36,7 +37,21 @@ class _RoomPageState extends State<RoomPage> {
   void initState() {
     super.initState();
     _fetchSchedules();
+    _fetchRoomDetails();
     _roomImageUrl = widget.roomPhoto.isNotEmpty ? widget.roomPhoto : null;
+  }
+
+  Future<void> _fetchRoomDetails() async {
+    final doc = await FirebaseFirestore.instance
+        .collection('rooms')
+        .doc(widget.roomId)
+        .get();
+
+    if (doc.exists) {
+      setState(() {
+        _roomCreatorId = doc['createdBy'];
+      });
+    }
   }
 
   Future<void> _pickRoomImage() async {
@@ -281,9 +296,10 @@ class _RoomPageState extends State<RoomPage> {
                   );
                 }
               },
-              itemBuilder: (BuildContext context) => const [
+              itemBuilder: (BuildContext context) => [
                 PopupMenuItem<int>(value: 1, child: Text('Get Code')),
-                PopupMenuItem<int>(value: 2, child: Text('Gain Access')),
+                if (_roomCreatorId == widget.userData['uid']) // Only show if user is creator
+                  const PopupMenuItem<int>(value: 2, child: Text('Gain Access')),
               ],
             ),
           ],

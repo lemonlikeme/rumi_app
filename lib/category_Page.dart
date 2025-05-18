@@ -180,7 +180,7 @@ class CategoryPage extends StatelessWidget {
                             userData: userData,
                             roomId: roomId,
                             categoryId: categoryId,
-                            roomCode: roomData['code'] ?? '',
+                            roomCode: roomData['roomCode'] ?? '',
                             roomPhoto: roomData['photo'] ?? '',
                           ),
                       settings: RouteSettings(arguments: roomData['name']),
@@ -390,7 +390,7 @@ class CategoryPage extends StatelessWidget {
 
                     final querySnapshot = await FirebaseFirestore.instance
                         .collection('rooms')
-                        .where('code', isEqualTo: enteredCode)
+                        .where('roomCode', isEqualTo: enteredCode)
                         .get();
 
                     if (querySnapshot.docs.isEmpty) {
@@ -551,7 +551,7 @@ class CategoryPage extends StatelessWidget {
 
                     final querySnapshot = await FirebaseFirestore.instance
                         .collection('rooms')
-                        .where('code', isEqualTo: enteredCode)
+                        .where('roomCode', isEqualTo: enteredCode)
                         .get();
 
                     if (querySnapshot.docs.isEmpty) {
