@@ -10,7 +10,6 @@ import 'my_App_Drawer.dart';
 class MainPage extends StatefulWidget {
   final Map<String, dynamic> userData;
 
-
   const MainPage({super.key, required this.userData});
 
   @override
@@ -18,6 +17,15 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
+  final TextEditingController _deleteCodeController = TextEditingController();
+
+  @override
+  void dispose() {
+    _deleteCodeController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -539,38 +547,100 @@ class _MainPageState extends State<MainPage> {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  'Enter the code:',
+                  'Enter code to delete access:',
                   style: TextStyle(
                     color: Color(0xFF9C27B0),
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextField(
-                  decoration: InputDecoration(
+                  controller: _deleteCodeController,
+                  decoration: const InputDecoration(
                     hintText: 'Room/Category Code',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFF9C27B0)),
-                    ),
-                    contentPadding: const EdgeInsets.all(16),
+                    border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    // Handle confirm action
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    String code = _deleteCodeController.text.trim();
+                    String userId = widget.userData['id'];
+
+                    if (code.isEmpty) return;
+
+                    bool found = false;
+                    bool access = false;
+
+                    // Check in groups
+                    var groupSnap = await FirebaseFirestore.instance
+                        .collection('groups')
+                        .where('groupCode', isEqualTo: code)
+                        .limit(1)
+                        .get();
+
+                    if (groupSnap.docs.isNotEmpty) {
+                      var doc = groupSnap.docs.first;
+                      List<dynamic> userIds = doc['userIds'] ?? [];
+
+                      found = true;
+
+                      if (userIds.contains(userId)) {
+                        userIds.remove(userId);
+                        await doc.reference.update({'userIds': userIds});
+                        access = true;
+                      }
+                    }
+
+                    // If not found in groups, check in rooms
+                    if (!found) {
+                      var roomSnap = await FirebaseFirestore.instance
+                          .collection('rooms')
+                          .where('roomCode', isEqualTo: code)
+                          .limit(1)
+                          .get();
+
+                      if (roomSnap.docs.isNotEmpty) {
+                        var doc = roomSnap.docs.first;
+                        List<dynamic> userIds = doc['userIds'] ?? [];
+
+                        found = true;
+
+                        if (userIds.contains(userId)) {
+                          userIds.remove(userId);
+                          await doc.reference.update({'userIds': userIds});
+                          access = true;
+                        }
+                      }
+                    }
+
+                    Navigator.pop(context); // Close the dialog
+
+                    // Result message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          !found
+                              ? 'No category/room found with that code.'
+                              : access
+                              ? 'Successfully removed access.'
+                              : 'You do not have access to delete this category/room.',
+                        ),
+                        backgroundColor: !found
+                            ? Colors.red
+                            : access
+                            ? Colors.green
+                            : Colors.orange,
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF9C27B0),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    minimumSize: const Size(double.infinity, 0),
                   ),
                   child: const Text(
-                    'Confirm',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    'Delete Access',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ],
