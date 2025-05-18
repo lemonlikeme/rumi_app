@@ -427,16 +427,30 @@ class _RoomPageState extends State<RoomPage> {
                     itemCount: schedules.length,
                     itemBuilder: (context, index) {
                       final sched = schedules[index];
+                      final schedId = sched['id'];
                       return ScheduleCard(
+                        scheduleId: schedId,
                         professor: sched['educator'] ?? '',
                         subject: sched['subject'] ?? '',
                         startTime: sched['startTime'] ?? '',
                         endTime: sched['endTime'] ?? '',
                         section: sched['section'] ?? '',
                         course: sched['course'] ?? '',
-                        onDelete: () {
-                          // TODO: Add Firestore delete logic
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deleted')));
+                        onDelete: () async {
+                          try {
+                            await FirebaseFirestore.instance
+                                .collection('schedules')
+                                .doc(schedId)
+                                .delete();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Schedule deleted')),
+                            );
+                            _fetchSchedules(); // Refresh the schedule list
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Failed to delete schedule: $e')),
+                            );
+                          }
                         },
                       );
                     },
@@ -478,6 +492,7 @@ class ScheduleCard extends StatelessWidget {
   final String endTime;
   final String section;
   final String course;
+  final String scheduleId;
   final VoidCallback onDelete;
 
   const ScheduleCard({
@@ -489,6 +504,7 @@ class ScheduleCard extends StatelessWidget {
     required this.section,
     required this.course,
     required this.onDelete,
+    required this.scheduleId,
   });
 
   @override
