@@ -298,7 +298,7 @@ class _RoomPageState extends State<RoomPage> {
               },
               itemBuilder: (BuildContext context) => [
                 PopupMenuItem<int>(value: 1, child: Text('Get Code')),
-                if (_roomCreatorId == widget.userData['uid']) // Only show if user is creator
+                if (_roomCreatorId == widget.userData['id']) // Only show if user is creator
                   const PopupMenuItem<int>(value: 2, child: Text('Gain Access')),
               ],
             ),
