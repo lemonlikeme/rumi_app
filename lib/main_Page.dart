@@ -478,9 +478,10 @@ class _MainPageState extends State<MainPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final theme = Theme.of(context);
         return AlertDialog(
           contentPadding: const EdgeInsets.all(20),
-          backgroundColor: Colors.white,
+          backgroundColor: theme.colorScheme.surface,
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -505,10 +506,10 @@ class _MainPageState extends State<MainPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   "You're currently signed in as:",
                   style: TextStyle(
-                    color: Color(0xFF9C27B0),
+                    color: theme.colorScheme.primary,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -528,16 +529,16 @@ class _MainPageState extends State<MainPage> {
                       children: [
                         Text(
                           widget.userData['username'] ?? 'Full Name',
-                          style: const TextStyle(
-                            color: Color(0xFF9C27B0),
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurface,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           widget.userData['profession'] ?? 'Profession',
-                          style: const TextStyle(
-                            color: Color(0xFF9C27B0),
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurface,
                             fontSize: 14,
                           ),
                         ),
@@ -546,10 +547,10 @@ class _MainPageState extends State<MainPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Enter code to delete access:',
                   style: TextStyle(
-                    color: Color(0xFF9C27B0),
+                    color: theme.colorScheme.primary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -638,9 +639,11 @@ class _MainPageState extends State<MainPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF9C27B0),
                   ),
-                  child: const Text(
+                  child: const Center(
+                    child: Text(
                     'Delete Access',
                     style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ],

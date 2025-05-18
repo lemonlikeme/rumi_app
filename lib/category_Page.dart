@@ -36,21 +36,163 @@ class CategoryPage extends StatelessWidget {
               } else if (value == 2) {
                 _showDeleteOption(context);
               } else if (value == 3) {
-                if (groupCode != null && groupCode!.isNotEmpty) {
+                if (groupCode.isNotEmpty) {
                   Clipboard.setData(ClipboardData(text: groupCode));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('Category code copied to clipboard')),
+                    SnackBar(content: Text('Category code copied to clipboard')),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('No category code available')),
                   );
                 }
+              } if (value == 4) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    bool isPrivate = false;
+
+                    return StatefulBuilder(
+                      builder: (context, setState) {
+                        final theme = Theme.of(context);
+                        return AlertDialog(
+                          backgroundColor: theme.colorScheme.surface,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          contentPadding: EdgeInsets.all(16),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF9C27B0),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(Icons.close, color: Colors.white),
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      "Access",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 20),
+                                Text(
+                                  "You're currently Signed in as:",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: theme.colorScheme.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                     CircleAvatar(
+                                      radius: 24,
+                                      backgroundColor: theme.colorScheme.primary,
+                                      child: Icon(
+                                          Icons.person_outline, size: 40, color: theme.colorScheme.onPrimary),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Name", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: theme.colorScheme.onSurface)),
+                                        Text("Profession", style: TextStyle(fontSize: 15, color: theme.colorScheme.onSurface.withOpacity(0.9))),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 16),
+                                Divider(color: Colors.grey),
+                                SizedBox(height: 10),
+                                Text(
+                                  "Toggle:",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  "Toggling this will enable Owner-Only Interactions",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontStyle: FontStyle.italic,
+                                    color: theme.colorScheme.primary.withOpacity(0.9),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Color(0xFF9C27B0), width: 2),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Private mode:",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: theme.colorScheme.onSurface,
+                                              fontWeight: FontWeight.bold)),
+                                      Switch(
+                                        value: isPrivate,
+                                        onChanged: (value) {
+                                          setState(() => isPrivate = value);
+                                        },
+                                        activeColor: Colors.white,
+                                        activeTrackColor: Color(0xFF9C27B0),
+                                        inactiveThumbColor: Colors.white,
+                                        inactiveTrackColor: Colors.grey.shade400,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color(0xFF9C27B0),
+                                      padding: EdgeInsets.symmetric(vertical: 12),
+                                    ),
+                                    child: Text("Confirm", style: TextStyle(color: Colors.white)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
               }
+
             },
-            itemBuilder: (BuildContext context) =>
-            [
+            itemBuilder: (BuildContext context) => [
               PopupMenuItem<int>(
                 value: 1,
                 child: Text('Find Room'),
@@ -61,7 +203,11 @@ class CategoryPage extends StatelessWidget {
               ),
               PopupMenuItem<int>(
                 value: 3,
-                child: Text('Copy Category Code'),
+                child: Text('Copy Room Code'),
+              ),
+              PopupMenuItem<int>(
+                value: 4,
+                child: Text('Gain Access'),
               ),
             ],
           ),
@@ -94,7 +240,7 @@ class CategoryPage extends StatelessWidget {
         },
         backgroundColor: Color(0xFF9C27B0),
 
-        child: Icon(Icons.add, color: theme.colorScheme.onPrimary),
+        child: Icon(Icons.add, color: theme.colorScheme.onSurface),
       ),
     );
   }
@@ -295,9 +441,9 @@ class CategoryPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Find Category and Room',
+                      'Find Room',
                       style: TextStyle(
-                        color: theme.colorScheme.primary,
+                        color: Color(0xFF9C27B0),
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -337,7 +483,7 @@ class CategoryPage extends StatelessWidget {
                         Text(
                           userData['username'] ?? 'Full Name',
                           style: TextStyle(
-                            color: theme.colorScheme.primary,
+                            color: theme.colorScheme.onSurface,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -345,7 +491,7 @@ class CategoryPage extends StatelessWidget {
                         Text(
                           userData['profession'] ?? 'Profession',
                           style: TextStyle(
-                            color: theme.colorScheme.onPrimary.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withOpacity(0.9),
                             fontSize: 14,
                           ),
                         ),
@@ -357,7 +503,7 @@ class CategoryPage extends StatelessWidget {
                 Text(
                   'Enter the code:',
                   style: TextStyle(
-                    color: theme.colorScheme.onPrimary,
+                    color: theme.colorScheme.primary,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -368,14 +514,14 @@ class CategoryPage extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: 'Room Code',
                     hintStyle: TextStyle(
-                        color: theme.colorScheme.onPrimary.withOpacity(0.5)),
+                        color: theme.colorScheme.onSurface.withOpacity(0.8)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: theme.colorScheme.primary),
                     ),
                     contentPadding: const EdgeInsets.all(16),
                   ),
-                  style: TextStyle(color: theme.colorScheme.primary),
+                  style: TextStyle(color: theme.colorScheme.onSurface),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
@@ -421,14 +567,14 @@ class CategoryPage extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
+                    backgroundColor: Color(0xFF9C27B0),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     minimumSize: const Size(double.infinity, 0),
                   ),
                   child: Text(
                     'Confirm',
                     style: TextStyle(
-                        color: theme.colorScheme.onPrimary, fontSize: 16),
+                        color: theme.colorScheme.onSurface, fontSize: 16),
                   ),
                 ),
               ],
@@ -460,7 +606,7 @@ class CategoryPage extends StatelessWidget {
                     Text(
                       'Delete Room from Category',
                       style: TextStyle(
-                        color: theme.colorScheme.primary,
+                        color: Color(0xFF9C27B0),
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -476,7 +622,7 @@ class CategoryPage extends StatelessWidget {
                 Text(
                   "You're currently signed in as:",
                   style: TextStyle(
-                    color: theme.colorScheme.onPrimary,
+                    color: theme.colorScheme.primary,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -500,7 +646,7 @@ class CategoryPage extends StatelessWidget {
                         Text(
                           userData['username'] ?? 'Full Name',
                           style: TextStyle(
-                            color: theme.colorScheme.onPrimary,
+                            color: theme.colorScheme.onSurface,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -508,7 +654,7 @@ class CategoryPage extends StatelessWidget {
                         Text(
                           userData['profession'] ?? 'Profession',
                           style: TextStyle(
-                            color: theme.colorScheme.onPrimary.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withOpacity(0.9),
                             fontSize: 14,
                           ),
                         ),
@@ -518,11 +664,11 @@ class CategoryPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Enter the room code to remove from category:',
+                  'Enter the Room Code to remove:',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onPrimary,
+                    color: theme.colorScheme.primary,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -581,14 +727,14 @@ class CategoryPage extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
+                    backgroundColor: Color(0xFF9C27B0),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     minimumSize: const Size(double.infinity, 0),
                   ),
                   child: Text(
                     'Confirm',
                     style: TextStyle(
-                        color: theme.colorScheme.onPrimary, fontSize: 16),
+                        color: theme.colorScheme.onSurface, fontSize: 16),
                   ),
                 ),
               ],
