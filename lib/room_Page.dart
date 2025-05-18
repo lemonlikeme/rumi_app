@@ -262,6 +262,7 @@ class _RoomPageState extends State<RoomPage> {
                                         Switch(
                                           value: isPrivate,
                                           onChanged: (value) async {
+                                            // Optimistically update the UI
                                             setState(() => isPrivate = value);
 
                                             try {
@@ -278,6 +279,9 @@ class _RoomPageState extends State<RoomPage> {
                                                 ),
                                               );
                                             } catch (e) {
+                                              // Revert the change in UI
+                                              setState(() => isPrivate = !value);
+
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(
                                                   content: Text('Failed to update access: $e'),
