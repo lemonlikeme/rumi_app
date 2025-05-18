@@ -261,8 +261,31 @@ class _RoomPageState extends State<RoomPage> {
                                                 fontWeight: FontWeight.bold)),
                                         Switch(
                                           value: isPrivate,
-                                          onChanged: (value) {
+                                          onChanged: (value) async {
                                             setState(() => isPrivate = value);
+
+                                            try {
+                                              await FirebaseFirestore.instance
+                                                  .collection('rooms')
+                                                  .doc(widget.roomId)
+                                                  .update({'access': value});
+
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text('Room access updated to ${value ? 'private' : 'public'}'),
+                                                  backgroundColor: Color(0xFF9C27B0),
+                                                  duration: Duration(seconds: 2),
+                                                ),
+                                              );
+                                            } catch (e) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text('Failed to update access: $e'),
+                                                  backgroundColor: Colors.red,
+                                                  duration: Duration(seconds: 2),
+                                                ),
+                                              );
+                                            }
                                           },
                                           activeColor: Colors.white,
                                           activeTrackColor: Color(0xFF9C27B0),
