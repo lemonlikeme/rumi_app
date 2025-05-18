@@ -428,6 +428,7 @@ class _RoomPageState extends State<RoomPage> {
                     itemCount: schedules.length,
                     itemBuilder: (context, index) {
                       final sched = schedules[index];
+
                       return ScheduleCard(
                         professor: sched['educator'] ?? '',
                         subject: sched['subject'] ?? '',
@@ -435,6 +436,7 @@ class _RoomPageState extends State<RoomPage> {
                         endTime: sched['endTime'] ?? '',
                         section: sched['section'] ?? '',
                         course: sched['course'] ?? '',
+                        canDelete: widget.userData['id'] == _roomCreatorId,
                         onDelete: () async {
                           final confirmed = await showDialog<bool>(
                             context: context,
@@ -513,7 +515,7 @@ class ScheduleCard extends StatelessWidget {
   final String endTime;
   final String section;
   final String course;
-
+  final bool canDelete;
   final VoidCallback onDelete;
 
   const ScheduleCard({
@@ -525,7 +527,7 @@ class ScheduleCard extends StatelessWidget {
     required this.section,
     required this.course,
     required this.onDelete,
-
+    required this.canDelete,
   });
 
   @override
@@ -566,17 +568,18 @@ class ScheduleCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                IconButton(
-                  onPressed: onDelete,
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.2),
-                    padding: const EdgeInsets.all(4),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                if (canDelete)
+                  IconButton(
+                    onPressed: onDelete,
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white.withOpacity(0.2),
+                      padding: const EdgeInsets.all(4),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
-                )
               ],
             ),
 
