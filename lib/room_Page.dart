@@ -436,19 +436,41 @@ class _RoomPageState extends State<RoomPage> {
                         section: sched['section'] ?? '',
                         course: sched['course'] ?? '',
                         onDelete: () async {
-                          try {
-                            await FirebaseFirestore.instance
-                                .collection('schedules')
-                                .doc(sched['schedId'])
-                                .delete();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Schedule deleted')),
-                            );
-                            _fetchSchedules(); // Refresh the schedule list
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Failed to delete schedule: $e')),
-                            );
+                          final confirmed = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Delete Schedule'),
+                              content: Text('Are you sure you want to delete this schedule?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, false),
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: Text('Delete', style: TextStyle(color: Colors.red)),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          if (confirmed == true) {
+                            try {
+                              await FirebaseFirestore.instance
+                                  .collection('schedules')
+                                  .doc(sched['schedId'])
+                                  .delete();
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Schedule deleted')),
+                              );
+
+                              _fetchSchedules(); // Refresh the list
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Failed to delete schedule: $e')),
+                              );
+                            }
                           }
                         },
                       );
