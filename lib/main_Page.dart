@@ -516,12 +516,22 @@ class _MainPageState extends State<MainPage> {
                 ),
                 const SizedBox(height: 10),
                 Row(
+
                   children: [
-                    const CircleAvatar(
-                      radius: 24,
-                      backgroundColor: Color(0xFF9C27B0),
-                      child: Icon(
-                          Icons.person_outline, size: 40, color: Colors.white),
+                    Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Color(0xFF9C27B0), width: 2),
+                        ),
+                        child:
+                        CircleAvatar(
+                          radius: 24,
+                          backgroundColor: Color(0xFF9C27B0),
+                          backgroundImage: widget.userData['photoProfile'] != null
+                              ? NetworkImage(widget.userData['photoProfile'])
+                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
+                        )
                     ),
                     const SizedBox(width: 10),
                     Column(

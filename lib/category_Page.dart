@@ -103,11 +103,20 @@ class CategoryPage extends StatelessWidget {
                                 SizedBox(height: 10),
                                 Row(
                                   children: [
-                                     CircleAvatar(
-                                      radius: 24,
-                                      backgroundColor: theme.colorScheme.primary,
-                                      child: Icon(
-                                          Icons.person_outline, size: 40, color: theme.colorScheme.onPrimary),
+                                    Container(
+                                        padding: EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: Color(0xFF9C27B0), width: 2),
+                                        ),
+                                        child:
+                                        CircleAvatar(
+                                          radius: 24,
+                                          backgroundColor: Color(0xFF9C27B0),
+                                          backgroundImage: userData['photoProfile'] != null
+                                              ? NetworkImage(userData['photoProfile'])
+                                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
+                                        )
                                     ),
                                     SizedBox(width: 10),
                                     Column(
@@ -467,14 +476,20 @@ class CategoryPage extends StatelessWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 24,
-                      backgroundColor: theme.colorScheme.primary,
-                      child: Icon(
-                        Icons.person_outline,
-                        size: 40,
-                        color: theme.colorScheme.onPrimary,
-                      ),
+                    Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Color(0xFF9C27B0), width: 2),
+                        ),
+                        child:
+                        CircleAvatar(
+                          radius: 24,
+                          backgroundColor: Color(0xFF9C27B0),
+                          backgroundImage: userData['photoProfile'] != null
+                              ? NetworkImage(userData['photoProfile'])
+                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
+                        )
                     ),
                     const SizedBox(width: 10),
                     Column(
@@ -630,14 +645,20 @@ class CategoryPage extends StatelessWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 24,
-                      backgroundColor: theme.colorScheme.primary,
-                      child: Icon(
-                        Icons.person_outline,
-                        size: 40,
-                        color: theme.colorScheme.onPrimary,
-                      ),
+                    Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Color(0xFF9C27B0), width: 2),
+                        ),
+                        child:
+                        CircleAvatar(
+                          radius: 24,
+                          backgroundColor: Color(0xFF9C27B0),
+                          backgroundImage: userData['photoProfile'] != null
+                              ? NetworkImage(userData['photoProfile'])
+                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
+                        )
                     ),
                     const SizedBox(width: 10),
                     Column(

@@ -110,23 +110,28 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
               children: [
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back, color: colorScheme.onPrimary),
-                      onPressed: () {
-                        if (widget.categoryId == null) {
-                          Navigator.pushReplacementNamed(context, '/main', arguments: widget.userData);
-                        } else {
-                          Navigator.pushReplacementNamed(context, '/category', arguments: {
-                            'userData': widget.userData,
-                            'categoryId': widget.categoryId,
-                            'groupCode': widget.groupCode,
-                          });
-                        }
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(colorScheme.primary),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back, color: colorScheme.onPrimary),
+                        onPressed: () {
+                          if (widget.categoryId == null) {
+                            Navigator.pushReplacementNamed(context, '/main', arguments: widget.userData);
+                          } else {
+                            Navigator.pushReplacementNamed(context, '/category', arguments: {
+                              'userData': widget.userData,
+                              'categoryId': widget.categoryId,
+                              'groupCode': widget.groupCode,
+                            });
+                          }
+                        },
                       ),
                     ),
+
+
                     const SizedBox(width: 16),
                     Text(
                       "Create a Room",

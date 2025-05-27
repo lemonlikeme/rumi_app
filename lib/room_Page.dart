@@ -162,8 +162,9 @@ class _RoomPageState extends State<RoomPage> {
 
                       return StatefulBuilder(
                         builder: (context, setState) {
+                          final theme = Theme.of(context);
                           return AlertDialog(
-                            backgroundColor: Color(0xFFE6E6FA),
+                            backgroundColor: theme.colorScheme.surface,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -203,7 +204,7 @@ class _RoomPageState extends State<RoomPage> {
                                     "You're currently Signed in as:",
                                     style: TextStyle(
                                       fontSize: 20,
-                                      color: Color(0xFF9C27B0),
+                                      color: theme.colorScheme.primary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -211,19 +212,39 @@ class _RoomPageState extends State<RoomPage> {
                                   Row(
                                     children: [
                                       Container(
-                                        padding: EdgeInsets.all(5),
+                                        padding: EdgeInsets.all(2),
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(color: Color(0xFF9C27B0), width: 2),
                                         ),
-                                        child: Icon(Icons.person_outline, size: 40),
+                                        child:
+                                        CircleAvatar(
+                                          radius: 24,
+                                          backgroundColor: Color(0xFF9C27B0),
+                                          backgroundImage: widget.userData['photoProfile'] != null
+                                              ? NetworkImage(widget.userData['photoProfile'])
+                                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
+                                        )
                                       ),
                                       SizedBox(width: 10),
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text("Name", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF9C27B0))),
-                                          Text("Profession", style: TextStyle(fontSize: 15, color: Color(0xFF9C27B0))),
+                                          Text(
+                                            widget.userData['username'] ?? 'Full Name',
+                                            style: TextStyle(
+                                              color: theme.colorScheme.onSurface,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            widget.userData['profession'] ?? 'Profession',
+                                            style: TextStyle(
+                                              color: theme.colorScheme.onSurface,
+                                              fontSize: 14,
+                                            ),
+                                          ),
                                         ],
                                       )
                                     ],
@@ -236,7 +257,7 @@ class _RoomPageState extends State<RoomPage> {
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
-                                      color: Color(0xFF9C27B0),
+                                      color: theme.colorScheme.primary,
                                     ),
                                   ),
                                   SizedBox(height: 5),
@@ -245,7 +266,7 @@ class _RoomPageState extends State<RoomPage> {
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontStyle: FontStyle.italic,
-                                      color: Color(0xFF9C27B0),
+                                      color: theme.colorScheme.primary,
                                     ),
                                   ),
                                   SizedBox(height: 10),
@@ -261,7 +282,7 @@ class _RoomPageState extends State<RoomPage> {
                                         Text("Private mode:",
                                             style: TextStyle(
                                                 fontSize: 20,
-                                                color: Color(0xFF9C27B0),
+                                                color: theme.colorScheme.primary,
                                                 fontWeight: FontWeight.bold)),
                                         Switch(
                                           value: isPrivate,

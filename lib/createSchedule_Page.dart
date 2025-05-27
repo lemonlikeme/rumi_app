@@ -106,12 +106,18 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
               // Header Row
               Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  Container(
+                    decoration: BoxDecoration(
+                    color: colorScheme.primary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back, color: colorScheme.onPrimary),
                     onPressed: () => Navigator.pop(context, {widget.userData, widget.roomId}),
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(colorScheme.primary),
                     ),
+                  ),
                   ),
                   const SizedBox(width: 10),
                   Text(

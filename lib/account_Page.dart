@@ -16,6 +16,8 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  bool _isPhoneVisible = false;
+  bool _isEmailVisible = false;
   File? _profileImage;
   String? _cloudinaryUrl;
   final _firestore = FirebaseFirestore.instance;
@@ -140,14 +142,36 @@ class _AccountPageState extends State<AccountPage> {
                 onEditPressed: () => _renameFullName(context),
               ),
               _buildInfoRow(
-                hint: widget.userData['email'] ?? 'Email',
+                hint: maskEmailAdd(widget.userData['email'], _isEmailVisible),
                 icon: Icons.email_outlined,
                 showEditButton: false,
+                trailing: IconButton(
+                  icon: Icon(
+                    _isEmailVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isEmailVisible = !_isEmailVisible;
+                    });
+                  }
+                ),
               ),
               _buildInfoRow(
-                hint: widget.userData['phone'] ?? 'Phone Number',
+                hint: maskPhoneNumber(widget.userData['phone'], _isPhoneVisible),
                 icon: Icons.local_phone_outlined,
                 showEditButton: false,
+                trailing: IconButton(
+                  icon: Icon(
+                    _isPhoneVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isPhoneVisible = !_isPhoneVisible;
+                    });
+                  },
+                ),
               ),
               _buildInfoRow(
                 hint: '••••••••',
@@ -188,11 +212,31 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
+
+  String maskPhoneNumber(String? phone, bool isVisible) {
+    if (phone == null) return 'Phone Number';
+    if (isVisible || phone.length < 4) return phone;
+    String firstTwo = phone.substring(0, 5);
+    String lastTwo = phone.substring(phone.length - 4);
+    String masked = '*' * (phone.length - 9);
+    return '$firstTwo$masked$lastTwo';
+  }
+
+  String maskEmailAdd(String? email, bool isVisible) {
+    if (email == null) return 'Email';
+    if (isVisible || email.length < 4) return email;
+    String firstTwo = email.substring(0, 6);
+    String lastTwo = email.substring(email.length - 10);
+    String masked = '*' * (email.length - 16);
+    return '$firstTwo$masked$lastTwo';
+  }
+
   Widget _buildInfoRow({
     required String hint,
     required IconData icon,
     bool showEditButton = true,
     VoidCallback? onEditPressed,
+    Widget? trailing, //
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -207,7 +251,7 @@ class _AccountPageState extends State<AccountPage> {
           if (showEditButton) const SizedBox(width: 8),
           if (showEditButton)
             Material(
-              color: Color(0xFF9C27B0),
+              color: const Color(0xFF9C27B0),
               shape: const CircleBorder(),
               elevation: 4,
               child: IconButton(
@@ -215,6 +259,8 @@ class _AccountPageState extends State<AccountPage> {
                 onPressed: onEditPressed,
               ),
             ),
+          if (trailing != null) const SizedBox(width: 8),
+          if (trailing != null) trailing,
         ],
       ),
     );
