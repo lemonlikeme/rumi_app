@@ -6,11 +6,13 @@ class CreateRoomPage extends StatefulWidget {
   final Map<String, dynamic> userData;
   final String? categoryId;
   final String? groupCode;
+  final String? categoryName;
   const CreateRoomPage({
     super.key,
     required this.userData,
     this.categoryId,
     this.groupCode,
+    this.categoryName,
   });
 
 
@@ -125,6 +127,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
                               'userData': widget.userData,
                               'categoryId': widget.categoryId,
                               'groupCode': widget.groupCode,
+                              'categoryName': widget.categoryName
                             });
                           }
                         },

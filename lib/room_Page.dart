@@ -522,8 +522,16 @@ class _RoomPageState extends State<RoomPage> {
               _fetchSchedules(); // Refresh schedules
             }
           },
-          backgroundColor: const Color(0xFF9C27B0),
-          child: const Icon(Icons.add, color: Colors.white),
+          backgroundColor: Color(0xFF9C27B0), // Your desired FAB color
+          foregroundColor: Colors.white, // Icon color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100), // Circular FAB
+            side: BorderSide(
+              color: Colors.white, // Outline color
+              width: 2.5, // Outline thickness
+            ),
+          ),
+          child: const Icon(Icons.add),
         ),
       ),
     );

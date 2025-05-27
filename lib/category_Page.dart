@@ -41,167 +41,18 @@ class CategoryPage extends StatelessWidget {
                 if (groupCode.isNotEmpty) {
                   Clipboard.setData(ClipboardData(text: groupCode));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Category code copied to clipboard')),
+                      SnackBar(
+                        content: Text('Room code copied to clipboard: ${groupCode}'),
+                        backgroundColor: Color(0xFF9C27B0),
+                        duration: Duration(seconds: 2),
+                      ),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('No category code available')),
                   );
                 }
-              } if (value == 4) {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    bool isPrivate = false;
-
-                    return StatefulBuilder(
-                      builder: (context, setState) {
-                        final theme = Theme.of(context);
-                        return AlertDialog(
-                          backgroundColor: theme.colorScheme.surface,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          contentPadding: EdgeInsets.all(16),
-                          content: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 48,
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFF9C27B0),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: IconButton(
-                                        icon: Icon(Icons.close, color: Colors.white),
-                                        onPressed: () => Navigator.pop(context),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      "Access",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: theme.colorScheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                Text(
-                                  "You're currently Signed in as:",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: theme.colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Container(
-                                        padding: EdgeInsets.all(2),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(color: Color(0xFF9C27B0), width: 2),
-                                        ),
-                                        child:
-                                        CircleAvatar(
-                                          radius: 24,
-                                          backgroundColor: Color(0xFF9C27B0),
-                                          backgroundImage: userData['photoProfile'] != null
-                                              ? NetworkImage(userData['photoProfile'])
-                                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
-                                        )
-                                    ),
-                                    SizedBox(width: 10),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text("Name", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: theme.colorScheme.onSurface)),
-                                        Text("Profession", style: TextStyle(fontSize: 15, color: theme.colorScheme.onSurface.withOpacity(0.9))),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 16),
-                                Divider(color: Colors.grey),
-                                SizedBox(height: 10),
-                                Text(
-                                  "Toggle:",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  "Toggling this will enable Owner-Only Interactions",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontStyle: FontStyle.italic,
-                                    color: theme.colorScheme.primary.withOpacity(0.9),
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Color(0xFF9C27B0), width: 2),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Private mode:",
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: theme.colorScheme.onSurface,
-                                              fontWeight: FontWeight.bold)),
-                                      Switch(
-                                        value: isPrivate,
-                                        onChanged: (value) {
-                                          setState(() => isPrivate = value);
-                                        },
-                                        activeColor: Colors.white,
-                                        activeTrackColor: Color(0xFF9C27B0),
-                                        inactiveThumbColor: Colors.white,
-                                        inactiveTrackColor: Colors.grey.shade400,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFF9C27B0),
-                                      padding: EdgeInsets.symmetric(vertical: 12),
-                                    ),
-                                    child: Text("Confirm", style: TextStyle(color: Colors.white)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                );
               }
-
             },
             itemBuilder: (BuildContext context) => [
               PopupMenuItem<int>(
@@ -215,10 +66,6 @@ class CategoryPage extends StatelessWidget {
               PopupMenuItem<int>(
                 value: 3,
                 child: Text('Copy Room Code'),
-              ),
-              PopupMenuItem<int>(
-                value: 4,
-                child: Text('Gain Access'),
               ),
             ],
           ),
@@ -245,13 +92,21 @@ class CategoryPage extends StatelessWidget {
                     userData: userData,
                     categoryId: categoryId,
                     groupCode: groupCode,
+                    categoryName: categoryName,
                   ),
             ),
           );
         },
-        backgroundColor: Color(0xFF9C27B0),
-
-        child: Icon(Icons.add, color: theme.colorScheme.onSurface),
+        backgroundColor: Color(0xFF9C27B0), // Your desired FAB color
+        foregroundColor: Colors.white, // Icon color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100), // Circular FAB
+          side: BorderSide(
+            color: Colors.white, // Outline color
+            width: 2.5, // Outline thickness
+          ),
+        ),
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -480,19 +335,21 @@ class CategoryPage extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                        padding: EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Color(0xFF9C27B0), width: 2),
-                        ),
-                        child:
-                        CircleAvatar(
-                          radius: 24,
-                          backgroundColor: Color(0xFF9C27B0),
-                          backgroundImage: userData['photoProfile'] != null
-                              ? NetworkImage(userData['photoProfile'])
-                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
-                        )
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFF9C27B0), width: 2),
+                      ),
+                      child: CircleAvatar(
+                        radius: 24,
+                        backgroundColor: const Color(0xFF9C27B0),
+                        backgroundImage: userData['photoProfile'] != null
+                            ? NetworkImage(userData['photoProfile'])
+                            : null,
+                        child: userData['photoProfile'] == null
+                            ? const Icon(Icons.person_outline, color: Colors.white, size: 32)
+                            : null,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Column(
@@ -649,19 +506,21 @@ class CategoryPage extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                        padding: EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Color(0xFF9C27B0), width: 2),
-                        ),
-                        child:
-                        CircleAvatar(
-                          radius: 24,
-                          backgroundColor: Color(0xFF9C27B0),
-                          backgroundImage: userData['photoProfile'] != null
-                              ? NetworkImage(userData['photoProfile'])
-                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
-                        )
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFF9C27B0), width: 2),
+                      ),
+                      child: CircleAvatar(
+                        radius: 24,
+                        backgroundColor: const Color(0xFF9C27B0),
+                        backgroundImage: userData['photoProfile'] != null
+                            ? NetworkImage(userData['photoProfile'])
+                            : null,
+                        child: userData['photoProfile'] == null
+                            ? const Icon(Icons.person_outline, color: Colors.white, size: 32)
+                            : null,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Column(

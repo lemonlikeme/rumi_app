@@ -108,15 +108,12 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                    color: colorScheme.primary,
+                    color: Color(0xFF9C27B0),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
-                    icon: Icon(Icons.arrow_back, color: colorScheme.onPrimary),
+                    icon: Icon(Icons.arrow_back, color: Colors.white),
                     onPressed: () => Navigator.pop(context, {widget.userData, widget.roomId}),
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(colorScheme.primary),
-                    ),
                   ),
                   ),
                   const SizedBox(width: 10),
@@ -215,10 +212,10 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
                 child: ElevatedButton(
                   onPressed: _confirmSchedule,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: colorScheme.primary,
+                    backgroundColor: Color(0xFF9C27B0),
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
-                  child: Text("Confirm", style: TextStyle(fontSize: 16, color: colorScheme.onPrimary)),
+                  child: Text("Confirm", style: TextStyle(fontSize: 16, color: Colors.white)),
                 ),
               ),
               const SizedBox(height: 32),

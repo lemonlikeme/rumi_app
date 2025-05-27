@@ -25,23 +25,22 @@ class MyAppDrawer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 160,
                     height: 160,
+                    width: 160,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: theme.cardColor,
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 5,
-                      ),
-                      borderRadius: BorderRadius.circular(100),
-                      image: DecorationImage(
-                        image: userData['photoProfile'] != null
-                            ? NetworkImage(userData['photoProfile'])
-                            : const AssetImage('assets/baseline_person_outline_24.png')
-                        as ImageProvider,
-                        fit: BoxFit.cover,
-                      ),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xFFFFFFFF), width: 2),
+                    ),
+                    child: CircleAvatar(
+                      radius: 24,
+                      backgroundColor: const Color(0xFF9C27B0),
+                      backgroundImage: userData['photoProfile'] != null
+                          ? NetworkImage(userData['photoProfile'])
+                          : null,
+                      child: userData['photoProfile'] == null
+                          ? const Icon(Icons.person_outline, color: Colors.white, size: 128)
+                          : null,
                     ),
                   ),
                   const SizedBox(height: 12),

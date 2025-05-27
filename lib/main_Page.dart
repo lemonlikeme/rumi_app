@@ -83,8 +83,16 @@ class _MainPageState extends State<MainPage> {
             builder: (context) => CustomBottomSheet(userData: widget.userData),
           );
         },
-        backgroundColor: const Color(0xFF9C27B0),
-        child: const Icon(Icons.add, color: Colors.white),
+        backgroundColor: Color(0xFF9C27B0), // Your desired FAB color
+        foregroundColor: Colors.white, // Icon color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100), // Circular FAB
+          side: BorderSide(
+            color: Colors.white, // Outline color
+            width: 2.5, // Outline thickness
+          ),
+        ),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -504,7 +512,7 @@ class _MainPageState extends State<MainPage> {
                     IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () => Navigator.pop(context),
-                      color: const Color(0xFF9C27B0),
+                      color: theme.colorScheme.primary,
                     ),
                   ],
                 ),
@@ -522,19 +530,21 @@ class _MainPageState extends State<MainPage> {
 
                   children: [
                     Container(
-                        padding: EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Color(0xFF9C27B0), width: 2),
-                        ),
-                        child:
-                        CircleAvatar(
-                          radius: 24,
-                          backgroundColor: Color(0xFF9C27B0),
-                          backgroundImage: widget.userData['photoProfile'] != null
-                              ? NetworkImage(widget.userData['photoProfile'])
-                              : const AssetImage('assets/baseline_person_outline_24.png') as ImageProvider,
-                        )
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFF9C27B0), width: 2),
+                      ),
+                      child: CircleAvatar(
+                        radius: 24,
+                        backgroundColor: const Color(0xFF9C27B0),
+                        backgroundImage: widget.userData['photoProfile'] != null
+                            ? NetworkImage(widget.userData['photoProfile'])
+                            : null,
+                        child: widget.userData['photoProfile'] == null
+                            ? const Icon(Icons.person_outline, color: Colors.white, size: 32)
+                            : null,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Column(

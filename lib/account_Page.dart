@@ -100,10 +100,10 @@ class _AccountPageState extends State<AccountPage> {
                     Container(
                       width: 150,
                       height: 150,
+                      padding: const EdgeInsets.all(4), // Added padding for the border
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Color(0xFF9C27B0), width: 4),
-                        color: theme.cardColor,
+                        border: Border.all(color: const Color(0xFF9C27B0), width: 4),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black26,
@@ -111,13 +111,14 @@ class _AccountPageState extends State<AccountPage> {
                             offset: Offset(0, 4),
                           ),
                         ],
-                        image: DecorationImage(
-                          image: _cloudinaryUrl != null
-                              ? NetworkImage(_cloudinaryUrl!)
-                              : const AssetImage('assets/baseline_person_outline_24.png')
-                          as ImageProvider,
-                          fit: BoxFit.cover,
-                        ),
+                      ),
+                      child: CircleAvatar(
+
+                        backgroundColor: const Color(0xFF9C27B0),
+                        backgroundImage: _cloudinaryUrl != null ? NetworkImage(_cloudinaryUrl!) : null,
+                        child: _cloudinaryUrl == null
+                            ? const Icon(Icons.person_outline, color: Colors.white, size: 128)
+                            : null,
                       ),
                     ),
                     Positioned(
@@ -355,7 +356,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void _resetPassword(BuildContext context) {
-    final emailController = TextEditingController(text: widget.userData['email']);
+    final emailController = TextEditingController();
 
     showDialog(
       context: context,
@@ -370,11 +371,11 @@ class _AccountPageState extends State<AccountPage> {
               children: [
                 _buildDialogHeader('Reset Password', context),
                 const SizedBox(height: 20),
-                const Text('We will send a password reset link to your email address:'),
+                const Text('Enter your email address to receive a password reset link:'),
                 const SizedBox(height: 10),
                 TextField(
                   controller: emailController,
-                  readOnly: true,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Email',
                     border: OutlineInputBorder(
@@ -385,32 +386,49 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                    onPressed: () async {
-                      final currentUser = FirebaseAuth.instance.currentUser;
-                      final email = emailController.text.trim();
+                  onPressed: () async {
+                    final email = emailController.text.trim();
+                    final currentUser = FirebaseAuth.instance.currentUser;
 
-                      if (currentUser != null && currentUser.email == email) {
-                        try {
-                          await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Password reset email sent.')),
-                          );
-                        } catch (e) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error: ${e.toString()}')),
-                          );
-                        }
-                      } else {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Email does not match current user.')),
-                        );
-                      }
+                    if (email.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter your email.'),
+                          duration: Duration(seconds: 1),
+                        ),
+                      );
+                      return;
                     }
-                  ,style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF9C27B0),
+
+
+                    if (currentUser != null && currentUser.email != email) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('The email does not match your account.'),
+                            duration: Duration(seconds: 1),
+                        ),
+                      );
+                      return;
+                    }
+
+                    try {
+                      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Password reset email sent.'),
+                            duration: Duration(seconds: 1),
+                        ),
+                      );
+                    } catch (e) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: ${e.toString()}')),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF9C27B0),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     minimumSize: const Size(double.infinity, 0),
                   ),
