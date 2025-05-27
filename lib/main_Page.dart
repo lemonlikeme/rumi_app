@@ -162,6 +162,7 @@ class _MainPageState extends State<MainPage> {
                           userData: widget.userData,
                           categoryId: docs[index].id,
                           groupCode: data['groupCode'] ?? '',
+                          categoryName: data['category'] ?? '',
                         ),
                       ),
                     );
@@ -268,6 +269,7 @@ class _MainPageState extends State<MainPage> {
                   String docId = docs[index].id;
                   String roomCode = data['roomCode'] ?? '';
                   String roomPhoto = data['roomPhoto'] ?? '';
+                  String roomName = data['room'] ?? '';
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -276,6 +278,7 @@ class _MainPageState extends State<MainPage> {
                           roomId: docId,
                           roomCode: roomCode,
                           roomPhoto: roomPhoto,
+                          roomName: roomName,
                       ),
                       settings: RouteSettings(arguments: data['name']),
                     ),

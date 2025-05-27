@@ -86,14 +86,12 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: colorScheme.primary,
+                        color: Color(0xFF9C27B0),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: IconButton(
-                        icon: Icon(
-                            Icons.arrow_back, color: colorScheme.onPrimary),
-                        onPressed: () =>
-                            Navigator.pop(context, widget.userData),
+                        icon: Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () => Navigator.pop(context, widget.userData),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -108,24 +106,16 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                _buildLabel('Category Name', colorScheme.primary),
-                _buildTextField(
-                    _categoryController, 'Enter category name', colorScheme),
-                const SizedBox(height: 16),
-                _buildLabel('Place', colorScheme.primary),
-                _buildTextField(
-                    _placeController, 'Enter the place here', colorScheme),
-                const SizedBox(height: 16),
-                _buildLabel('Building', colorScheme.primary),
-                _buildTextField(_buildingController, 'Enter the building here',
-                    colorScheme),
+                _buildLabeledInput('Category Name', 'Enter category name', _categoryController, colorScheme),
+                _buildLabeledInput('Place', 'Enter the place here', _placeController, colorScheme),
+                _buildLabeledInput('Building', 'Enter the building here', _buildingController, colorScheme),
                 const SizedBox(height: 32),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: createCategory,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
+                      backgroundColor: Color(0xFF9C27B0),
                       foregroundColor: colorScheme.onPrimary,
                       padding: const EdgeInsets.all(16),
                       shape: RoundedRectangleBorder(
@@ -133,8 +123,7 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
                       ),
                       elevation: 4,
                     ),
-                    child: const Text(
-                        'Confirm', style: TextStyle(fontSize: 16)),
+                    child: Text('Confirm', style: TextStyle(fontSize: 16, color: Colors.white)),
                   ),
                 ),
               ],
@@ -144,40 +133,38 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
       ),
     );
   }
-
-  Widget _buildLabel(String text, Color color) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        text,
-        style: TextStyle(
-          color: color,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(TextEditingController controller, String hint,
-      ColorScheme colorScheme) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(color: Colors.grey),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.all(12),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: colorScheme.primary),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: colorScheme.primary, width: 2),
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-    );
-  }
 }
+
+  Widget _buildLabeledInput(String label, String hint, TextEditingController controller, ColorScheme colorScheme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: colorScheme.primary,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(color: colorScheme.onSurface),
+            contentPadding: const EdgeInsets.all(12),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: colorScheme.primary),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: colorScheme.primary, width: 2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }

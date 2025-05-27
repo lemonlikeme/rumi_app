@@ -97,7 +97,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -112,11 +112,11 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: colorScheme.primary,
+                        color: Color(0xFF9C27B0),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: IconButton(
-                        icon: Icon(Icons.arrow_back, color: colorScheme.onPrimary),
+                        icon: Icon(Icons.arrow_back, color: Colors.white),
                         onPressed: () {
                           if (widget.categoryId == null) {
                             Navigator.pushReplacementNamed(context, '/main', arguments: widget.userData);
@@ -152,12 +152,12 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
                 ElevatedButton(
                   onPressed: createRoom,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: colorScheme.primary,
+                    backgroundColor: Color(0xFF9C27B0),
                     foregroundColor: colorScheme.onPrimary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    textStyle: const TextStyle(fontSize: 16),
+                    textStyle: TextStyle(fontSize: 16, color: colorScheme.onSurface),
                   ),
-                  child: const Center(child: Text("Confirm")),
+                  child: Center(child: Text("Confirm")),
                 ),
               ],
             ),
@@ -174,9 +174,9 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
-            color: Color(0xFF9C27B0),
+            color: colorScheme.primary,
           ),
         ),
         const SizedBox(height: 8),
@@ -185,10 +185,8 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
           keyboardType: inputType,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: Colors.grey),
+            hintStyle: TextStyle(color: colorScheme.onSurface),
             contentPadding: const EdgeInsets.all(14),
-            filled: true,
-            fillColor: Colors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(color: Color(0xFF9C27B0)),

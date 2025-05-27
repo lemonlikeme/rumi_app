@@ -38,7 +38,8 @@ class MyApp extends StatelessWidget {
           return CategoryPage(
             userData: args['userData'],
             categoryId: args['categoryId'],
-            groupCode: args['groupCode']
+            groupCode: args['groupCode'],
+            categoryName: args['categoryName'],
           );
         },
         // Add more named routes as needed

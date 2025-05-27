@@ -16,9 +16,11 @@ class RoomPage extends StatefulWidget {
   final String? categoryId;
   final String roomCode;
   final String roomPhoto;
+  final String roomName;
   const RoomPage({super.key, required this.userData,
     required this.roomId, this.categoryId, required this.roomCode,
     required this.roomPhoto,
+    required this.roomName,
   });
 
   @override
@@ -132,15 +134,13 @@ class _RoomPageState extends State<RoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String roomName =
-        ModalRoute.of(context)!.settings.arguments as String? ?? 'Room';
 
     return DefaultTabController(
       length: 7,
       child: Scaffold(
         drawer: MyAppDrawer(userData: widget.userData),
         appBar: MyAppBar(
-          title: widget.roomId,
+          title: widget.roomName,
           iconTheme: const IconThemeData(color: Colors.white),
           actions: [
             PopupMenuButton<int>(

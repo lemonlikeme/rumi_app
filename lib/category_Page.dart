@@ -11,12 +11,14 @@ class CategoryPage extends StatelessWidget {
   final Map<String, dynamic> userData;
   final String categoryId;
   final String groupCode;
+  final String categoryName;
 
   const CategoryPage({
     super.key,
     required this.userData,
     required this.categoryId,
-    required this.groupCode
+    required this.groupCode,
+    required this.categoryName
   });
 
   @override
@@ -26,7 +28,7 @@ class CategoryPage extends StatelessWidget {
     return Scaffold(
       drawer: MyAppDrawer(userData: userData),
       appBar: MyAppBar(
-        title: categoryId,
+        title: categoryName,
         iconTheme: IconThemeData(color: Colors.white),
         actions: [
           PopupMenuButton<int>(
@@ -337,6 +339,7 @@ class CategoryPage extends StatelessWidget {
                             categoryId: categoryId,
                             roomCode: roomData['roomCode'] ?? '',
                             roomPhoto: roomData['roomPhoto'] ?? '',
+                            roomName: roomData['room'] ?? '',
                           ),
                       settings: RouteSettings(arguments: roomData['name']),
                     ),
